@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="3.0" xmlns:edmx="http://schemas.microsoft.com/ado/2009/11/edmx">
+ <!-- EF Designer content (DO NOT EDIT MANUALLY BELOW HERE) -->
+  <edmx:Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
+    <!-- Diagram content (shape and connector positions) -->
+    <edmx:Diagrams>
+      <Diagram DiagramId="1a14a97e483c43e58e8123f4025b4de6" Name="Diagram1">
+        <EntityTypeShape EntityType="DashBoardMPMModel.api_application" Width="1.5" PointX="7.75" PointY="7.125" />
+        <EntityTypeShape EntityType="DashBoardMPMModel.api_client_configuration" Width="1.5" PointX="0.75" PointY="9.125" />
+        <EntityTypeShape EntityType="DashBoardMPMModel.api_log_request" Width="1.5" PointX="9.75" PointY="7.125" />
+        <EntityTypeShape EntityType="DashBoardMPMModel.api_parameter" Width="1.5" PointX="2.75" PointY="11.125" />
+        <EntityTypeShape EntityType="DashBoardMPMModel.api_url" Width="1.5" PointX="4.75" PointY="11.125" />
+        <EntityTypeShape EntityType="DashBoardMPMModel.it_task_register" Width="1.5" PointX="7.75" PointY="1.875" />
+        <EntityTypeShape EntityType="DashBoardMPMModel.it_task_schedule" Width="1.5" PointX="10" PointY="1.5" />
+        <EntityTypeShape EntityType="DashBoardMPMModel.tbl_batch_status" Width="1.5" PointX="0.75" PointY="4.75" />
+        <EntityTypeShape EntityType="DashBoardMPMModel.tbl_participant_list" Width="1.5" PointX="5.25" PointY="1.625" />
+        <EntityTypeShape EntityType="DashBoardMPMModel.tbl_participant_list_history" Width="1.5" PointX="11.75" PointY="7.125" />
+        <EntityTypeShape EntityType="DashBoardMPMModel.tbl_participant_status" Width="1.5" PointX="3" PointY="0.75" />
+        <EntityTypeShape EntityType="DashBoardMPMModel.tbl_placing_batch" Width="1.5" PointX="3" PointY="4.125" />
+        <AssociationConnector Association="DashBoardMPMModel.tsc_tre_fk" />
+        <AssociationConnector Association="DashBoardMPMModel.FK__tbl_placi__batch__40058253" />
+        <AssociationConnector Association="DashBoardMPMModel.FK__tbl_parti__batch__42E1EEFE" />
+        <AssociationConnector Association="DashBoardMPMModel.FK__tbl_parti__parti__43D61337" />
+        <EntityTypeShape EntityType="DashBoardMPMModel.tbl_cover_notes" Width="1.5" PointX="12.375" PointY="0.75" />
+      </Diagram>
+    </edmx:Diagrams>
+  </edmx:Designer>
+</edmx:Edmx>

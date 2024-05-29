@@ -1,0 +1,1023 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="3.0" xmlns:edmx="http://schemas.microsoft.com/ado/2009/11/edmx">
+  <!-- EF Runtime content -->
+  <edmx:Runtime>
+    <!-- SSDL content -->
+    <edmx:StorageModels>
+    <Schema Namespace="DashBoardMPMModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2008" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+        <EntityType Name="api_application">
+          <Key>
+            <PropertyRef Name="app_id" />
+          </Key>
+          <Property Name="app_id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="app_token" Type="varchar" MaxLength="100" />
+          <Property Name="app_desc" Type="varchar" MaxLength="300" />
+          <Property Name="grant_type" Type="varchar" MaxLength="100" />
+          <Property Name="url_access" Type="varchar" MaxLength="300" />
+          <Property Name="username" Type="varchar" MaxLength="100" />
+          <Property Name="password" Type="varchar" MaxLength="100" />
+          <Property Name="client_secret" Type="varchar" MaxLength="100" />
+          <Property Name="scope" Type="varchar" MaxLength="100" />
+          <Property Name="client_auth" Type="varchar" MaxLength="100" />
+          <Property Name="st_active" Type="char" MaxLength="1" />
+          <Property Name="create_date" Type="datetime" Nullable="false" />
+          <Property Name="create_id" Type="varchar" MaxLength="15" Nullable="false" />
+          <Property Name="modify_date" Type="datetime" />
+          <Property Name="modify_id" Type="varchar" MaxLength="15" />
+        </EntityType>
+        <EntityType Name="api_client_configuration">
+          <Key>
+            <PropertyRef Name="api_id" />
+          </Key>
+          <Property Name="api_id" Type="int" Nullable="false" />
+          <Property Name="api_name" Type="varchar" MaxLength="100" />
+          <Property Name="api_desc" Type="varchar" MaxLength="300" />
+          <Property Name="env_name" Type="varchar" MaxLength="100" />
+          <Property Name="client_desc" Type="varchar" MaxLength="300" />
+          <Property Name="api_key" Type="varchar" MaxLength="700" />
+          <Property Name="access_token" Type="varchar" MaxLength="300" />
+          <Property Name="host_name" Type="varchar" MaxLength="100" />
+          <Property Name="port" Type="varchar" MaxLength="100" />
+          <Property Name="http_method" Type="varchar" MaxLength="100" />
+          <Property Name="url" Type="varchar" MaxLength="100" />
+          <Property Name="content_type" Type="varchar" MaxLength="100" />
+          <Property Name="authentication_name" Type="varchar" MaxLength="100" />
+          <Property Name="create_date" Type="datetime" Nullable="false" />
+          <Property Name="create_id" Type="varchar" MaxLength="15" Nullable="false" />
+          <Property Name="modify_date" Type="datetime" />
+          <Property Name="modify_id" Type="varchar" MaxLength="15" />
+          <Property Name="status" Type="char" MaxLength="1" />
+        </EntityType>
+        <EntityType Name="api_log_request">
+          <Key>
+            <PropertyRef Name="id" />
+          </Key>
+          <Property Name="id" Type="bigint" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="request_direction" Type="varchar" MaxLength="5" />
+          <Property Name="request_url" Type="varchar" MaxLength="300" />
+          <Property Name="request_method" Type="varchar" MaxLength="10" />
+          <Property Name="request_header" Type="varchar(max)" />
+          <Property Name="request_body" Type="varchar(max)" />
+          <Property Name="response_body" Type="varchar(max)" />
+          <Property Name="response_error" Type="varchar(max)" />
+          <Property Name="app_id" Type="int" />
+          <Property Name="time_load" Type="decimal" Precision="24" Scale="16" />
+          <Property Name="user_id" Type="varchar" MaxLength="30" />
+          <Property Name="create_date" Type="datetime" Nullable="false" />
+          <Property Name="ip_address" Type="varchar" MaxLength="50" />
+        </EntityType>
+        <EntityType Name="api_parameter">
+          <Key>
+            <PropertyRef Name="parameter_code" />
+          </Key>
+          <Property Name="parameter_code" Type="varchar" MaxLength="30" Nullable="false" />
+          <Property Name="parameter_desc" Type="varchar" MaxLength="300" Nullable="false" />
+          <Property Name="userid" Type="varchar" MaxLength="100" />
+          <Property Name="password" Type="varchar" MaxLength="100" />
+          <Property Name="sender" Type="varchar" MaxLength="100" />
+          <Property Name="division" Type="varchar" MaxLength="300" />
+          <Property Name="batchname" Type="varchar" MaxLength="100" />
+          <Property Name="channel" Type="varchar" MaxLength="30" />
+          <Property Name="prefixcode" Type="varchar" MaxLength="30" />
+        </EntityType>
+        <EntityType Name="api_url">
+          <Key>
+            <PropertyRef Name="url_id" />
+          </Key>
+          <Property Name="url_id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="url_value" Type="varchar" MaxLength="100" Nullable="false" />
+          <Property Name="url_method" Type="varchar" MaxLength="4" Nullable="false" />
+          <Property Name="url_name" Type="varchar" MaxLength="100" />
+          <Property Name="url_desc" Type="varchar" MaxLength="300" />
+          <Property Name="group_code" Type="varchar" MaxLength="10" />
+          <Property Name="exec_order" Type="int" />
+          <Property Name="create_id" Type="varchar" MaxLength="30" />
+          <Property Name="create_date" Type="datetime" />
+          <Property Name="modify_id" Type="varchar" MaxLength="30" />
+          <Property Name="modify_date" Type="datetime" />
+          <Property Name="file_template" Type="varchar" MaxLength="100" />
+        </EntityType>
+        <EntityType Name="it_task_register">
+          <Key>
+            <PropertyRef Name="task_code" />
+          </Key>
+          <Property Name="task_code" Type="varchar" MaxLength="30" Nullable="false" />
+          <Property Name="task_name" Type="varchar" MaxLength="100" />
+          <Property Name="task_desc" Type="varchar" MaxLength="300" />
+          <Property Name="group_status" Type="char" MaxLength="1" />
+          <Property Name="task_type" Type="varchar" MaxLength="10" />
+          <Property Name="task_object" Type="varchar" MaxLength="100" />
+          <Property Name="group_code" Type="varchar" MaxLength="10" />
+          <Property Name="exec_order" Type="int" />
+          <Property Name="create_id" Type="varchar" MaxLength="30" />
+          <Property Name="create_date" Type="datetime" />
+          <Property Name="modify_id" Type="varchar" MaxLength="30" />
+          <Property Name="modify_date" Type="datetime" />
+          <Property Name="file_template" Type="varchar" MaxLength="100" />
+        </EntityType>
+        <EntityType Name="it_task_schedule">
+          <Key>
+            <PropertyRef Name="register_id" />
+          </Key>
+          <Property Name="register_id" Type="int" Nullable="false" />
+          <Property Name="task_code" Type="varchar" MaxLength="30" />
+          <Property Name="desc" Type="varchar" MaxLength="300" />
+          <Property Name="schedule_type" Type="varchar" MaxLength="100" />
+          <Property Name="start_schedule" Type="datetime" />
+          <Property Name="next_schedule" Type="datetime" />
+          <Property Name="interval" Type="int" Nullable="false" />
+          <Property Name="interval_unit" Type="char" MaxLength="1" />
+          <Property Name="ref_id" Type="varchar" MaxLength="20" />
+          <Property Name="status" Type="char" MaxLength="1" />
+          <Property Name="stage" Type="varchar" MaxLength="1" />
+          <Property Name="output_type" Type="varchar" MaxLength="30" />
+          <Property Name="create_id" Type="varchar" MaxLength="30" />
+          <Property Name="create_date" Type="datetime" Nullable="false" />
+          <Property Name="modify_id" Type="varchar" MaxLength="30" />
+          <Property Name="modify_date" Type="datetime" />
+          <Property Name="bps_id" Type="varchar" MaxLength="10" />
+        </EntityType>
+        <EntityType Name="tbl_batch_status">
+          <Key>
+            <PropertyRef Name="id" />
+          </Key>
+          <Property Name="id" Type="int" Nullable="false" />
+          <Property Name="status_desc" Type="varchar" MaxLength="100" />
+          <Property Name="create_date" Type="date" Nullable="false" />
+          <Property Name="create_id" Type="varchar" MaxLength="30" Nullable="false" />
+          <Property Name="modified_date" Type="date" />
+          <Property Name="modified_id" Type="varchar" MaxLength="30" />
+        </EntityType>
+        <EntityType Name="tbl_cover_notes">
+          <Key>
+            <PropertyRef Name="id" />
+          </Key>
+          <Property Name="id" Type="nvarchar" MaxLength="60" Nullable="false" />
+          <Property Name="number" Type="varchar" MaxLength="30" />
+          <Property Name="countOfInsurables" Type="int" />
+          <Property Name="sumOfPremium" Type="nvarchar" MaxLength="30" />
+          <Property Name="status" Type="nvarchar" MaxLength="20" />
+          <Property Name="sumOfAmountAll" Type="nvarchar" MaxLength="30" />
+          <Property Name="administrationFee" Type="nvarchar" MaxLength="30" />
+          <Property Name="createdTime" Type="datetime" />
+          <Property Name="finalizedTime" Type="datetime" />
+          <Property Name="batch_id" Type="varchar" MaxLength="80" Nullable="false" />
+        </EntityType>
+        <EntityType Name="tbl_participant_list">
+          <Key>
+            <PropertyRef Name="id" />
+          </Key>
+          <Property Name="regno" Type="varchar" MaxLength="36" />
+          <Property Name="regno_batch" Type="varchar" MaxLength="36" />
+          <Property Name="batch_id" Type="varchar" MaxLength="80" Nullable="false" />
+          <Property Name="participant_status" Type="int" Nullable="false" />
+          <Property Name="notif_status" Type="int" Nullable="false" />
+          <Property Name="id" Type="varchar" MaxLength="60" Nullable="false" />
+          <Property Name="clientRefId" Type="varchar" MaxLength="60" />
+          <Property Name="clientCompany" Type="varchar" MaxLength="60" />
+          <Property Name="lenderBranchCode" Type="varchar" MaxLength="60" />
+          <Property Name="lenderBranchLabel" Type="varchar" MaxLength="60" />
+          <Property Name="idNumber" Type="varchar" MaxLength="60" />
+          <Property Name="name" Type="varchar" MaxLength="255" />
+          <Property Name="dateOfBirth" Type="date" />
+          <Property Name="gender" Type="varchar" MaxLength="6" />
+          <Property Name="address" Type="varchar(max)" />
+          <Property Name="maritalStatus" Type="varchar" MaxLength="12" />
+          <Property Name="fundManagementType" Type="varchar" MaxLength="30" />
+          <Property Name="debtorId" Type="varchar" MaxLength="30" />
+          <Property Name="loanId" Type="varchar" MaxLength="30" />
+          <Property Name="lenderProductCode" Type="varchar" MaxLength="30" />
+          <Property Name="lenderProductType" Type="varchar" MaxLength="30" />
+          <Property Name="ceilingAmount" Type="float" />
+          <Property Name="Suku_Bunga" Type="float" />
+          <Property Name="termInWeeks" Type="int" />
+          <Property Name="cycle" Type="int" />
+          <Property Name="gracePeriodInWeeks" Type="int" />
+          <Property Name="disbursementDate" Type="date" />
+          <Property Name="dueDate" Type="date" />
+          <Property Name="termDurationInWeeks" Type="int" />
+          <Property Name="termStart" Type="date" />
+          <Property Name="termEnd" Type="date" />
+          <Property Name="ageAtTermStart" Type="float" />
+          <Property Name="ageAtTermEnd" Type="float" />
+          <Property Name="contract" Type="varchar" MaxLength="100" />
+          <Property Name="premiumAmount" Type="float" />
+          <Property Name="brokerageFeeAmount" Type="float" />
+          <Property Name="coverNoteNumber" Type="varchar" MaxLength="100" />
+          <Property Name="admin_fee" Type="int" />
+        </EntityType>
+        <EntityType Name="tbl_participant_list_history">
+          <Key>
+            <PropertyRef Name="id" />
+          </Key>
+          <Property Name="rowid" Type="bigint" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="regno" Type="varchar" MaxLength="36" />
+          <Property Name="batch_id" Type="varchar" MaxLength="80" Nullable="false" />
+          <Property Name="participant_status" Type="int" Nullable="false" />
+          <Property Name="notif_status" Type="int" Nullable="false" />
+          <Property Name="id" Type="varchar" MaxLength="60" Nullable="false" />
+          <Property Name="clientRefId" Type="varchar" MaxLength="60" />
+          <Property Name="clientCompany" Type="varchar" MaxLength="60" />
+          <Property Name="lenderBranchCode" Type="varchar" MaxLength="60" />
+          <Property Name="lenderBranchLabel" Type="varchar" MaxLength="60" />
+          <Property Name="idNumber" Type="varchar" MaxLength="60" />
+          <Property Name="name" Type="varchar" MaxLength="255" />
+          <Property Name="dateOfBirth" Type="date" />
+          <Property Name="gender" Type="varchar" MaxLength="6" />
+          <Property Name="address" Type="varchar(max)" />
+          <Property Name="maritalStatus" Type="varchar" MaxLength="12" />
+          <Property Name="fundManagementType" Type="varchar" MaxLength="30" />
+          <Property Name="debtorId" Type="varchar" MaxLength="30" />
+          <Property Name="loanId" Type="varchar" MaxLength="30" />
+          <Property Name="lenderProductCode" Type="varchar" MaxLength="30" />
+          <Property Name="lenderProductType" Type="varchar" MaxLength="30" />
+          <Property Name="ceilingAmount" Type="decimal" Precision="13" Scale="2" />
+          <Property Name="Suku_Bunga" Type="decimal" Precision="12" Scale="6" />
+          <Property Name="termInWeeks" Type="int" />
+          <Property Name="cycle" Type="int" />
+          <Property Name="gracePeriodInWeeks" Type="int" />
+          <Property Name="disbursementDate" Type="date" />
+          <Property Name="dueDate" Type="date" />
+          <Property Name="termDurationInWeeks" Type="int" />
+          <Property Name="termStart" Type="date" />
+          <Property Name="termEnd" Type="date" />
+          <Property Name="ageAtTermStart" Type="float" />
+          <Property Name="ageAtTermEnd" Type="float" />
+          <Property Name="contract" Type="varchar" MaxLength="100" />
+          <Property Name="premiumAmount" Type="float" />
+          <Property Name="brokerageFeeAmount" Type="float" />
+          <Property Name="coverNoteNumber" Type="varchar" MaxLength="100" />
+          <Property Name="regno_batch" Type="varchar" MaxLength="36" />
+        </EntityType>
+        <EntityType Name="tbl_participant_status">
+          <Key>
+            <PropertyRef Name="id" />
+          </Key>
+          <Property Name="id" Type="int" Nullable="false" />
+          <Property Name="status_desc" Type="varchar" MaxLength="100" />
+          <Property Name="create_date" Type="date" Nullable="false" />
+          <Property Name="create_id" Type="varchar" MaxLength="30" Nullable="false" />
+          <Property Name="modified_date" Type="date" />
+          <Property Name="modified_id" Type="varchar" MaxLength="30" />
+        </EntityType>
+        <EntityType Name="tbl_placing_batch">
+          <Key>
+            <PropertyRef Name="id" />
+          </Key>
+          <Property Name="batch_status" Type="int" />
+          <Property Name="insert_date" Type="datetime" />
+          <Property Name="process_date" Type="datetime" />
+          <Property Name="id" Type="varchar" MaxLength="80" Nullable="false" />
+          <Property Name="createdTime" Type="datetime" />
+          <Property Name="status" Type="varchar" MaxLength="30" />
+          <Property Name="totalInsurables" Type="int" />
+          <Property Name="totalCoveredInsurables" Type="int" />
+          <Property Name="totalRejectedInsurables" Type="int" />
+          <Property Name="totalUncoveredInsurables" Type="int" />
+          <Property Name="totalCoveredInsurablesUnderPolicy" Type="int" />
+          <Property Name="totalCoveredInsurablesNotUnderPolicy" Type="int" />
+          <Property Name="gen_id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+        </EntityType>
+        <Association Name="FK__tbl_parti__batch__42E1EEFE">
+          <End Role="tbl_placing_batch" Type="Self.tbl_placing_batch" Multiplicity="1" />
+          <End Role="tbl_participant_list" Type="Self.tbl_participant_list" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="tbl_placing_batch">
+              <PropertyRef Name="id" />
+            </Principal>
+            <Dependent Role="tbl_participant_list">
+              <PropertyRef Name="batch_id" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__tbl_parti__parti__43D61337">
+          <End Role="tbl_participant_status" Type="Self.tbl_participant_status" Multiplicity="1" />
+          <End Role="tbl_participant_list" Type="Self.tbl_participant_list" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="tbl_participant_status">
+              <PropertyRef Name="id" />
+            </Principal>
+            <Dependent Role="tbl_participant_list">
+              <PropertyRef Name="participant_status" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="tsc_tre_fk">
+          <End Role="it_task_register" Type="Self.it_task_register" Multiplicity="0..1" />
+          <End Role="it_task_schedule" Type="Self.it_task_schedule" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="it_task_register">
+              <PropertyRef Name="task_code" />
+            </Principal>
+            <Dependent Role="it_task_schedule">
+              <PropertyRef Name="task_code" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityContainer Name="DashBoardMPMModelStoreContainer">
+          <EntitySet Name="api_application" EntityType="Self.api_application" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="api_client_configuration" EntityType="Self.api_client_configuration" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="api_log_request" EntityType="Self.api_log_request" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="api_parameter" EntityType="Self.api_parameter" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="api_url" EntityType="Self.api_url" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="it_task_register" EntityType="Self.it_task_register" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="it_task_schedule" EntityType="Self.it_task_schedule" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="tbl_batch_status" EntityType="Self.tbl_batch_status" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="tbl_cover_notes" EntityType="Self.tbl_cover_notes" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="tbl_participant_list" EntityType="Self.tbl_participant_list" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="tbl_participant_list_history" EntityType="Self.tbl_participant_list_history" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="tbl_participant_status" EntityType="Self.tbl_participant_status" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="tbl_placing_batch" EntityType="Self.tbl_placing_batch" Schema="dbo" store:Type="Tables" />
+          <AssociationSet Name="FK__tbl_parti__batch__42E1EEFE" Association="Self.FK__tbl_parti__batch__42E1EEFE">
+            <End Role="tbl_placing_batch" EntitySet="tbl_placing_batch" />
+            <End Role="tbl_participant_list" EntitySet="tbl_participant_list" />
+          </AssociationSet>
+          <AssociationSet Name="FK__tbl_parti__parti__43D61337" Association="Self.FK__tbl_parti__parti__43D61337">
+            <End Role="tbl_participant_status" EntitySet="tbl_participant_status" />
+            <End Role="tbl_participant_list" EntitySet="tbl_participant_list" />
+          </AssociationSet>
+          <AssociationSet Name="tsc_tre_fk" Association="Self.tsc_tre_fk">
+            <End Role="it_task_register" EntitySet="it_task_register" />
+            <End Role="it_task_schedule" EntitySet="it_task_schedule" />
+          </AssociationSet>
+        </EntityContainer>
+      </Schema></edmx:StorageModels>
+    <!-- CSDL content -->
+    <edmx:ConceptualModels>
+      <Schema Namespace="DashBoardMPMModel" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
+        <EntityContainer Name="DashBoardMPMEntities1" annotation:LazyLoadingEnabled="true">
+          <EntitySet Name="api_application" EntityType="DashBoardMPMModel.api_application" />
+          <EntitySet Name="api_client_configuration" EntityType="DashBoardMPMModel.api_client_configuration" />
+          <EntitySet Name="api_log_request" EntityType="DashBoardMPMModel.api_log_request" />
+          <EntitySet Name="api_parameter" EntityType="DashBoardMPMModel.api_parameter" />
+          <EntitySet Name="api_url" EntityType="DashBoardMPMModel.api_url" />
+          <EntitySet Name="it_task_register" EntityType="DashBoardMPMModel.it_task_register" />
+          <EntitySet Name="it_task_schedule" EntityType="DashBoardMPMModel.it_task_schedule" />
+          <EntitySet Name="tbl_batch_status" EntityType="DashBoardMPMModel.tbl_batch_status" />
+          <EntitySet Name="tbl_participant_list" EntityType="DashBoardMPMModel.tbl_participant_list" />
+          <EntitySet Name="tbl_participant_list_history" EntityType="DashBoardMPMModel.tbl_participant_list_history" />
+          <EntitySet Name="tbl_participant_status" EntityType="DashBoardMPMModel.tbl_participant_status" />
+          <EntitySet Name="tbl_placing_batch" EntityType="DashBoardMPMModel.tbl_placing_batch" />
+          <AssociationSet Name="tsc_tre_fk" Association="DashBoardMPMModel.tsc_tre_fk">
+            <End Role="it_task_register" EntitySet="it_task_register" />
+            <End Role="it_task_schedule" EntitySet="it_task_schedule" />
+          </AssociationSet>
+          <AssociationSet Name="FK__tbl_placi__batch__40058253" Association="DashBoardMPMModel.FK__tbl_placi__batch__40058253">
+            <End Role="tbl_batch_status" EntitySet="tbl_batch_status" />
+            <End Role="tbl_placing_batch" EntitySet="tbl_placing_batch" />
+          </AssociationSet>
+          <AssociationSet Name="FK__tbl_parti__batch__42E1EEFE" Association="DashBoardMPMModel.FK__tbl_parti__batch__42E1EEFE">
+            <End Role="tbl_placing_batch" EntitySet="tbl_placing_batch" />
+            <End Role="tbl_participant_list" EntitySet="tbl_participant_list" />
+          </AssociationSet>
+          <AssociationSet Name="FK__tbl_parti__parti__43D61337" Association="DashBoardMPMModel.FK__tbl_parti__parti__43D61337">
+            <End Role="tbl_participant_status" EntitySet="tbl_participant_status" />
+            <End Role="tbl_participant_list" EntitySet="tbl_participant_list" />
+          </AssociationSet>
+          <EntitySet Name="tbl_cover_notes" EntityType="DashBoardMPMModel.tbl_cover_notes" />
+        </EntityContainer>
+        <EntityType Name="api_application">
+          <Key>
+            <PropertyRef Name="app_id" />
+          </Key>
+          <Property Name="app_id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="app_token" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
+          <Property Name="app_desc" Type="String" MaxLength="300" FixedLength="false" Unicode="false" />
+          <Property Name="grant_type" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
+          <Property Name="url_access" Type="String" MaxLength="300" FixedLength="false" Unicode="false" />
+          <Property Name="username" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
+          <Property Name="password" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
+          <Property Name="client_secret" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
+          <Property Name="scope" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
+          <Property Name="client_auth" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
+          <Property Name="st_active" Type="String" MaxLength="1" FixedLength="true" Unicode="false" />
+          <Property Name="create_date" Type="DateTime" Nullable="false" Precision="3" />
+          <Property Name="create_id" Type="String" Nullable="false" MaxLength="15" FixedLength="false" Unicode="false" />
+          <Property Name="modify_date" Type="DateTime" Precision="3" />
+          <Property Name="modify_id" Type="String" MaxLength="15" FixedLength="false" Unicode="false" />
+        </EntityType>
+        <EntityType Name="api_client_configuration">
+          <Key>
+            <PropertyRef Name="api_id" />
+          </Key>
+          <Property Name="api_id" Type="Int32" Nullable="false" />
+          <Property Name="api_name" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
+          <Property Name="api_desc" Type="String" MaxLength="300" FixedLength="false" Unicode="false" />
+          <Property Name="env_name" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
+          <Property Name="client_desc" Type="String" MaxLength="300" FixedLength="false" Unicode="false" />
+          <Property Name="api_key" Type="String" MaxLength="700" FixedLength="false" Unicode="false" />
+          <Property Name="access_token" Type="String" MaxLength="300" FixedLength="false" Unicode="false" />
+          <Property Name="host_name" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
+          <Property Name="port" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
+          <Property Name="http_method" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
+          <Property Name="url" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
+          <Property Name="content_type" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
+          <Property Name="authentication_name" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
+          <Property Name="create_date" Type="DateTime" Nullable="false" Precision="3" />
+          <Property Name="create_id" Type="String" Nullable="false" MaxLength="15" FixedLength="false" Unicode="false" />
+          <Property Name="modify_date" Type="DateTime" Precision="3" />
+          <Property Name="modify_id" Type="String" MaxLength="15" FixedLength="false" Unicode="false" />
+          <Property Name="status" Type="String" MaxLength="1" FixedLength="true" Unicode="false" />
+        </EntityType>
+        <EntityType Name="api_log_request">
+          <Key>
+            <PropertyRef Name="id" />
+          </Key>
+          <Property Name="id" Type="Int64" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="request_direction" Type="String" MaxLength="5" FixedLength="false" Unicode="false" />
+          <Property Name="request_url" Type="String" MaxLength="300" FixedLength="false" Unicode="false" />
+          <Property Name="request_method" Type="String" MaxLength="10" FixedLength="false" Unicode="false" />
+          <Property Name="request_header" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
+          <Property Name="request_body" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
+          <Property Name="response_body" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
+          <Property Name="response_error" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
+          <Property Name="app_id" Type="Int32" />
+          <Property Name="time_load" Type="Decimal" Precision="24" Scale="16" />
+          <Property Name="user_id" Type="String" MaxLength="30" FixedLength="false" Unicode="false" />
+          <Property Name="create_date" Type="DateTime" Nullable="false" Precision="3" />
+          <Property Name="ip_address" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+        </EntityType>
+        <EntityType Name="api_parameter">
+          <Key>
+            <PropertyRef Name="parameter_code" />
+          </Key>
+          <Property Name="parameter_code" Type="String" Nullable="false" MaxLength="30" FixedLength="false" Unicode="false" />
+          <Property Name="parameter_desc" Type="String" Nullable="false" MaxLength="300" FixedLength="false" Unicode="false" />
+          <Property Name="userid" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
+          <Property Name="password" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
+          <Property Name="sender" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
+          <Property Name="division" Type="String" MaxLength="300" FixedLength="false" Unicode="false" />
+          <Property Name="batchname" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
+          <Property Name="channel" Type="String" MaxLength="30" FixedLength="false" Unicode="false" />
+          <Property Name="prefixcode" Type="String" MaxLength="30" FixedLength="false" Unicode="false" />
+        </EntityType>
+        <EntityType Name="api_url">
+          <Key>
+            <PropertyRef Name="url_id" />
+          </Key>
+          <Property Name="url_id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="url_value" Type="String" Nullable="false" MaxLength="100" FixedLength="false" Unicode="false" />
+          <Property Name="url_method" Type="String" Nullable="false" MaxLength="4" FixedLength="false" Unicode="false" />
+          <Property Name="url_name" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
+          <Property Name="url_desc" Type="String" MaxLength="300" FixedLength="false" Unicode="false" />
+          <Property Name="group_code" Type="String" MaxLength="10" FixedLength="false" Unicode="false" />
+          <Property Name="exec_order" Type="Int32" />
+          <Property Name="create_id" Type="String" MaxLength="30" FixedLength="false" Unicode="false" />
+          <Property Name="create_date" Type="DateTime" Precision="3" />
+          <Property Name="modify_id" Type="String" MaxLength="30" FixedLength="false" Unicode="false" />
+          <Property Name="modify_date" Type="DateTime" Precision="3" />
+          <Property Name="file_template" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
+        </EntityType>
+        <EntityType Name="it_task_register">
+          <Key>
+            <PropertyRef Name="task_code" />
+          </Key>
+          <Property Name="task_code" Type="String" Nullable="false" MaxLength="30" FixedLength="false" Unicode="false" />
+          <Property Name="task_name" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
+          <Property Name="task_desc" Type="String" MaxLength="300" FixedLength="false" Unicode="false" />
+          <Property Name="group_status" Type="String" MaxLength="1" FixedLength="true" Unicode="false" />
+          <Property Name="task_type" Type="String" MaxLength="10" FixedLength="false" Unicode="false" />
+          <Property Name="task_object" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
+          <Property Name="group_code" Type="String" MaxLength="10" FixedLength="false" Unicode="false" />
+          <Property Name="exec_order" Type="Int32" />
+          <Property Name="create_id" Type="String" MaxLength="30" FixedLength="false" Unicode="false" />
+          <Property Name="create_date" Type="DateTime" Precision="3" />
+          <Property Name="modify_id" Type="String" MaxLength="30" FixedLength="false" Unicode="false" />
+          <Property Name="modify_date" Type="DateTime" Precision="3" />
+          <Property Name="file_template" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
+          <NavigationProperty Name="it_task_schedule" Relationship="DashBoardMPMModel.tsc_tre_fk" FromRole="it_task_register" ToRole="it_task_schedule" />
+        </EntityType>
+        <EntityType Name="it_task_schedule">
+          <Key>
+            <PropertyRef Name="register_id" />
+          </Key>
+          <Property Name="register_id" Type="Int32" Nullable="false" />
+          <Property Name="task_code" Type="String" MaxLength="30" FixedLength="false" Unicode="false" />
+          <Property Name="desc" Type="String" MaxLength="300" FixedLength="false" Unicode="false" />
+          <Property Name="schedule_type" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
+          <Property Name="start_schedule" Type="DateTime" Precision="3" />
+          <Property Name="next_schedule" Type="DateTime" Precision="3" />
+          <Property Name="interval" Type="Int32" Nullable="false" />
+          <Property Name="interval_unit" Type="String" MaxLength="1" FixedLength="true" Unicode="false" />
+          <Property Name="ref_id" Type="String" MaxLength="20" FixedLength="false" Unicode="false" />
+          <Property Name="status" Type="String" MaxLength="1" FixedLength="true" Unicode="false" />
+          <Property Name="stage" Type="String" MaxLength="1" FixedLength="false" Unicode="false" />
+          <Property Name="output_type" Type="String" MaxLength="30" FixedLength="false" Unicode="false" />
+          <Property Name="create_id" Type="String" MaxLength="30" FixedLength="false" Unicode="false" />
+          <Property Name="create_date" Type="DateTime" Nullable="false" Precision="3" />
+          <Property Name="modify_id" Type="String" MaxLength="30" FixedLength="false" Unicode="false" />
+          <Property Name="modify_date" Type="DateTime" Precision="3" />
+          <Property Name="bps_id" Type="String" MaxLength="10" FixedLength="false" Unicode="false" />
+          <NavigationProperty Name="it_task_register" Relationship="DashBoardMPMModel.tsc_tre_fk" FromRole="it_task_schedule" ToRole="it_task_register" />
+        </EntityType>
+        <EntityType Name="tbl_batch_status">
+          <Key>
+            <PropertyRef Name="id" />
+          </Key>
+          <Property Name="id" Type="Int32" Nullable="false" />
+          <Property Name="status_desc" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
+          <Property Name="create_date" Type="DateTime" Nullable="false" Precision="0" />
+          <Property Name="create_id" Type="String" Nullable="false" MaxLength="30" FixedLength="false" Unicode="false" />
+          <Property Name="modified_date" Type="DateTime" Precision="0" />
+          <Property Name="modified_id" Type="String" MaxLength="30" FixedLength="false" Unicode="false" />
+          <NavigationProperty Name="tbl_placing_batch" Relationship="DashBoardMPMModel.FK__tbl_placi__batch__40058253" FromRole="tbl_batch_status" ToRole="tbl_placing_batch" />
+        </EntityType>
+        <EntityType Name="tbl_participant_list">
+          <Key>
+            <PropertyRef Name="id" />
+          </Key>
+          <Property Name="regno" Type="String" MaxLength="36" FixedLength="false" Unicode="false" />
+          <Property Name="regno_batch" Type="String" MaxLength="36" FixedLength="false" Unicode="false" />
+          <Property Name="batch_id" Type="String" Nullable="false" MaxLength="80" FixedLength="false" Unicode="false" />
+          <Property Name="participant_status" Type="Int32" Nullable="false" />
+          <Property Name="notif_status" Type="Int32" Nullable="false" />
+          <Property Name="id" Type="String" Nullable="false" MaxLength="60" FixedLength="false" Unicode="false" />
+          <Property Name="clientRefId" Type="String" MaxLength="60" FixedLength="false" Unicode="false" />
+          <Property Name="clientCompany" Type="String" MaxLength="60" FixedLength="false" Unicode="false" />
+          <Property Name="lenderBranchCode" Type="String" MaxLength="60" FixedLength="false" Unicode="false" />
+          <Property Name="lenderBranchLabel" Type="String" MaxLength="60" FixedLength="false" Unicode="false" />
+          <Property Name="idNumber" Type="String" MaxLength="60" FixedLength="false" Unicode="false" />
+          <Property Name="name" Type="String" MaxLength="255" FixedLength="false" Unicode="false" />
+          <Property Name="dateOfBirth" Type="DateTime" Precision="0" />
+          <Property Name="gender" Type="String" MaxLength="6" FixedLength="false" Unicode="false" />
+          <Property Name="address" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
+          <Property Name="maritalStatus" Type="String" MaxLength="12" FixedLength="false" Unicode="false" />
+          <Property Name="fundManagementType" Type="String" MaxLength="30" FixedLength="false" Unicode="false" />
+          <Property Name="debtorId" Type="String" MaxLength="30" FixedLength="false" Unicode="false" />
+          <Property Name="loanId" Type="String" MaxLength="30" FixedLength="false" Unicode="false" />
+          <Property Name="lenderProductCode" Type="String" MaxLength="30" FixedLength="false" Unicode="false" />
+          <Property Name="lenderProductType" Type="String" MaxLength="30" FixedLength="false" Unicode="false" />
+          <Property Name="ceilingAmount" Type="Double" />
+          <Property Name="Suku_Bunga" Type="Double" />
+          <Property Name="termInWeeks" Type="Int32" />
+          <Property Name="cycle" Type="Int32" />
+          <Property Name="gracePeriodInWeeks" Type="Int32" />
+          <Property Name="disbursementDate" Type="DateTime" Precision="0" />
+          <Property Name="dueDate" Type="DateTime" Precision="0" />
+          <Property Name="termDurationInWeeks" Type="Int32" />
+          <Property Name="termStart" Type="DateTime" Precision="0" />
+          <Property Name="termEnd" Type="DateTime" Precision="0" />
+          <Property Name="ageAtTermStart" Type="Double" />
+          <Property Name="ageAtTermEnd" Type="Double" />
+          <Property Name="contract" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
+          <Property Name="premiumAmount" Type="Double" />
+          <Property Name="brokerageFeeAmount" Type="Double" />
+          <Property Name="coverNoteNumber" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
+          <NavigationProperty Name="tbl_placing_batch" Relationship="DashBoardMPMModel.FK__tbl_parti__batch__42E1EEFE" FromRole="tbl_participant_list" ToRole="tbl_placing_batch" />
+          <NavigationProperty Name="tbl_participant_status" Relationship="DashBoardMPMModel.FK__tbl_parti__parti__43D61337" FromRole="tbl_participant_list" ToRole="tbl_participant_status" />
+          <Property Name="admin_fee" Type="Int32" />
+        </EntityType>
+        <EntityType Name="tbl_participant_list_history">
+          <Key>
+            <PropertyRef Name="id" />
+          </Key>
+          <Property Name="rowid" Type="Int64" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="regno" Type="String" MaxLength="36" FixedLength="false" Unicode="false" />
+          <Property Name="batch_id" Type="String" Nullable="false" MaxLength="80" FixedLength="false" Unicode="false" />
+          <Property Name="participant_status" Type="Int32" Nullable="false" />
+          <Property Name="notif_status" Type="Int32" Nullable="false" />
+          <Property Name="id" Type="String" Nullable="false" MaxLength="60" FixedLength="false" Unicode="false" />
+          <Property Name="clientRefId" Type="String" MaxLength="60" FixedLength="false" Unicode="false" />
+          <Property Name="clientCompany" Type="String" MaxLength="60" FixedLength="false" Unicode="false" />
+          <Property Name="lenderBranchCode" Type="String" MaxLength="60" FixedLength="false" Unicode="false" />
+          <Property Name="lenderBranchLabel" Type="String" MaxLength="60" FixedLength="false" Unicode="false" />
+          <Property Name="idNumber" Type="String" MaxLength="60" FixedLength="false" Unicode="false" />
+          <Property Name="name" Type="String" MaxLength="255" FixedLength="false" Unicode="false" />
+          <Property Name="dateOfBirth" Type="DateTime" Precision="0" />
+          <Property Name="gender" Type="String" MaxLength="6" FixedLength="false" Unicode="false" />
+          <Property Name="address" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
+          <Property Name="maritalStatus" Type="String" MaxLength="12" FixedLength="false" Unicode="false" />
+          <Property Name="fundManagementType" Type="String" MaxLength="30" FixedLength="false" Unicode="false" />
+          <Property Name="debtorId" Type="String" MaxLength="30" FixedLength="false" Unicode="false" />
+          <Property Name="loanId" Type="String" MaxLength="30" FixedLength="false" Unicode="false" />
+          <Property Name="lenderProductCode" Type="String" MaxLength="30" FixedLength="false" Unicode="false" />
+          <Property Name="lenderProductType" Type="String" MaxLength="30" FixedLength="false" Unicode="false" />
+          <Property Name="ceilingAmount" Type="Decimal" Precision="13" Scale="2" />
+          <Property Name="Suku_Bunga" Type="Decimal" Precision="12" Scale="6" />
+          <Property Name="termInWeeks" Type="Int32" />
+          <Property Name="cycle" Type="Int32" />
+          <Property Name="gracePeriodInWeeks" Type="Int32" />
+          <Property Name="disbursementDate" Type="DateTime" Precision="0" />
+          <Property Name="dueDate" Type="DateTime" Precision="0" />
+          <Property Name="termDurationInWeeks" Type="Int32" />
+          <Property Name="termStart" Type="DateTime" Precision="0" />
+          <Property Name="termEnd" Type="DateTime" Precision="0" />
+          <Property Name="ageAtTermStart" Type="Double" />
+          <Property Name="ageAtTermEnd" Type="Double" />
+          <Property Name="contract" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
+          <Property Name="premiumAmount" Type="Double" />
+          <Property Name="brokerageFeeAmount" Type="Double" />
+          <Property Name="coverNoteNumber" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
+          <Property Name="regno_batch" Type="String" MaxLength="36" FixedLength="false" Unicode="false" />
+        </EntityType>
+        <EntityType Name="tbl_participant_status">
+          <Key>
+            <PropertyRef Name="id" />
+          </Key>
+          <Property Name="id" Type="Int32" Nullable="false" />
+          <Property Name="status_desc" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
+          <Property Name="create_date" Type="DateTime" Nullable="false" Precision="0" />
+          <Property Name="create_id" Type="String" Nullable="false" MaxLength="30" FixedLength="false" Unicode="false" />
+          <Property Name="modified_date" Type="DateTime" Precision="0" />
+          <Property Name="modified_id" Type="String" MaxLength="30" FixedLength="false" Unicode="false" />
+          <NavigationProperty Name="tbl_participant_list" Relationship="DashBoardMPMModel.FK__tbl_parti__parti__43D61337" FromRole="tbl_participant_status" ToRole="tbl_participant_list" />
+        </EntityType>
+        <EntityType Name="tbl_placing_batch">
+          <Key>
+            <PropertyRef Name="id" />
+          </Key>
+          <Property Name="batch_status" Type="Int32" />
+          <Property Name="insert_date" Type="DateTime" Precision="3" />
+          <Property Name="process_date" Type="DateTime" Precision="3" />
+          <Property Name="id" Type="String" Nullable="false" MaxLength="80" FixedLength="false" Unicode="false" />
+          <Property Name="createdTime" Type="DateTime" Precision="3" />
+          <Property Name="status" Type="String" MaxLength="30" FixedLength="false" Unicode="false" />
+          <Property Name="totalInsurables" Type="Int32" />
+          <Property Name="totalCoveredInsurables" Type="Int32" />
+          <Property Name="totalRejectedInsurables" Type="Int32" />
+          <Property Name="totalUncoveredInsurables" Type="Int32" />
+          <Property Name="totalCoveredInsurablesUnderPolicy" Type="Int32" />
+          <Property Name="totalCoveredInsurablesNotUnderPolicy" Type="Int32" />
+          <NavigationProperty Name="tbl_batch_status" Relationship="DashBoardMPMModel.FK__tbl_placi__batch__40058253" FromRole="tbl_placing_batch" ToRole="tbl_batch_status" />
+          <NavigationProperty Name="tbl_participant_list" Relationship="DashBoardMPMModel.FK__tbl_parti__batch__42E1EEFE" FromRole="tbl_placing_batch" ToRole="tbl_participant_list" />
+          <Property Name="gen_id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+        </EntityType>
+        <Association Name="tsc_tre_fk">
+          <End Type="DashBoardMPMModel.it_task_register" Role="it_task_register" Multiplicity="0..1" />
+          <End Type="DashBoardMPMModel.it_task_schedule" Role="it_task_schedule" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="it_task_register">
+              <PropertyRef Name="task_code" />
+            </Principal>
+            <Dependent Role="it_task_schedule">
+              <PropertyRef Name="task_code" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__tbl_placi__batch__40058253">
+          <End Type="DashBoardMPMModel.tbl_batch_status" Role="tbl_batch_status" Multiplicity="0..1" />
+          <End Type="DashBoardMPMModel.tbl_placing_batch" Role="tbl_placing_batch" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="tbl_batch_status">
+              <PropertyRef Name="id" />
+            </Principal>
+            <Dependent Role="tbl_placing_batch">
+              <PropertyRef Name="batch_status" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__tbl_parti__batch__42E1EEFE">
+          <End Type="DashBoardMPMModel.tbl_placing_batch" Role="tbl_placing_batch" Multiplicity="1" />
+          <End Type="DashBoardMPMModel.tbl_participant_list" Role="tbl_participant_list" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="tbl_placing_batch">
+              <PropertyRef Name="id" />
+            </Principal>
+            <Dependent Role="tbl_participant_list">
+              <PropertyRef Name="batch_id" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__tbl_parti__parti__43D61337">
+          <End Type="DashBoardMPMModel.tbl_participant_status" Role="tbl_participant_status" Multiplicity="1" />
+          <End Type="DashBoardMPMModel.tbl_participant_list" Role="tbl_participant_list" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="tbl_participant_status">
+              <PropertyRef Name="id" />
+            </Principal>
+            <Dependent Role="tbl_participant_list">
+              <PropertyRef Name="participant_status" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityType Name="tbl_cover_notes">
+          <Key>
+            <PropertyRef Name="id" />
+          </Key>
+          <Property Name="id" Type="String" Nullable="false" MaxLength="60" FixedLength="false" Unicode="true" />
+          <Property Name="number" Type="String" MaxLength="30" FixedLength="false" Unicode="false" />
+          <Property Name="countOfInsurables" Type="Int32" />
+          <Property Name="sumOfPremium" Type="String" MaxLength="30" FixedLength="false" Unicode="true" />
+          <Property Name="status" Type="String" MaxLength="20" FixedLength="false" Unicode="true" />
+          <Property Name="sumOfAmountAll" Type="String" MaxLength="30" FixedLength="false" Unicode="true" />
+          <Property Name="administrationFee" Type="String" MaxLength="30" FixedLength="false" Unicode="true" />
+          <Property Name="createdTime" Type="DateTime" Precision="3" />
+          <Property Name="finalizedTime" Type="DateTime" Precision="3" />
+          <Property Name="batch_id" Type="String" Nullable="false" MaxLength="80" FixedLength="false" Unicode="false" />
+        </EntityType>
+        </Schema>
+    </edmx:ConceptualModels>
+    <!-- C-S mapping content -->
+    <edmx:Mappings>
+      <Mapping Space="C-S" xmlns="http://schemas.microsoft.com/ado/2009/11/mapping/cs">
+        <EntityContainerMapping StorageEntityContainer="DashBoardMPMModelStoreContainer" CdmEntityContainer="DashBoardMPMEntities1">
+          <EntitySetMapping Name="api_application">
+            <EntityTypeMapping TypeName="DashBoardMPMModel.api_application">
+              <MappingFragment StoreEntitySet="api_application">
+                <ScalarProperty Name="modify_id" ColumnName="modify_id" />
+                <ScalarProperty Name="modify_date" ColumnName="modify_date" />
+                <ScalarProperty Name="create_id" ColumnName="create_id" />
+                <ScalarProperty Name="create_date" ColumnName="create_date" />
+                <ScalarProperty Name="st_active" ColumnName="st_active" />
+                <ScalarProperty Name="client_auth" ColumnName="client_auth" />
+                <ScalarProperty Name="scope" ColumnName="scope" />
+                <ScalarProperty Name="client_secret" ColumnName="client_secret" />
+                <ScalarProperty Name="password" ColumnName="password" />
+                <ScalarProperty Name="username" ColumnName="username" />
+                <ScalarProperty Name="url_access" ColumnName="url_access" />
+                <ScalarProperty Name="grant_type" ColumnName="grant_type" />
+                <ScalarProperty Name="app_desc" ColumnName="app_desc" />
+                <ScalarProperty Name="app_token" ColumnName="app_token" />
+                <ScalarProperty Name="app_id" ColumnName="app_id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="api_client_configuration">
+            <EntityTypeMapping TypeName="DashBoardMPMModel.api_client_configuration">
+              <MappingFragment StoreEntitySet="api_client_configuration">
+                <ScalarProperty Name="status" ColumnName="status" />
+                <ScalarProperty Name="modify_id" ColumnName="modify_id" />
+                <ScalarProperty Name="modify_date" ColumnName="modify_date" />
+                <ScalarProperty Name="create_id" ColumnName="create_id" />
+                <ScalarProperty Name="create_date" ColumnName="create_date" />
+                <ScalarProperty Name="authentication_name" ColumnName="authentication_name" />
+                <ScalarProperty Name="content_type" ColumnName="content_type" />
+                <ScalarProperty Name="url" ColumnName="url" />
+                <ScalarProperty Name="http_method" ColumnName="http_method" />
+                <ScalarProperty Name="port" ColumnName="port" />
+                <ScalarProperty Name="host_name" ColumnName="host_name" />
+                <ScalarProperty Name="access_token" ColumnName="access_token" />
+                <ScalarProperty Name="api_key" ColumnName="api_key" />
+                <ScalarProperty Name="client_desc" ColumnName="client_desc" />
+                <ScalarProperty Name="env_name" ColumnName="env_name" />
+                <ScalarProperty Name="api_desc" ColumnName="api_desc" />
+                <ScalarProperty Name="api_name" ColumnName="api_name" />
+                <ScalarProperty Name="api_id" ColumnName="api_id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="api_log_request">
+            <EntityTypeMapping TypeName="DashBoardMPMModel.api_log_request">
+              <MappingFragment StoreEntitySet="api_log_request">
+                <ScalarProperty Name="ip_address" ColumnName="ip_address" />
+                <ScalarProperty Name="create_date" ColumnName="create_date" />
+                <ScalarProperty Name="user_id" ColumnName="user_id" />
+                <ScalarProperty Name="time_load" ColumnName="time_load" />
+                <ScalarProperty Name="app_id" ColumnName="app_id" />
+                <ScalarProperty Name="response_error" ColumnName="response_error" />
+                <ScalarProperty Name="response_body" ColumnName="response_body" />
+                <ScalarProperty Name="request_body" ColumnName="request_body" />
+                <ScalarProperty Name="request_header" ColumnName="request_header" />
+                <ScalarProperty Name="request_method" ColumnName="request_method" />
+                <ScalarProperty Name="request_url" ColumnName="request_url" />
+                <ScalarProperty Name="request_direction" ColumnName="request_direction" />
+                <ScalarProperty Name="id" ColumnName="id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="api_parameter">
+            <EntityTypeMapping TypeName="DashBoardMPMModel.api_parameter">
+              <MappingFragment StoreEntitySet="api_parameter">
+                <ScalarProperty Name="prefixcode" ColumnName="prefixcode" />
+                <ScalarProperty Name="channel" ColumnName="channel" />
+                <ScalarProperty Name="batchname" ColumnName="batchname" />
+                <ScalarProperty Name="division" ColumnName="division" />
+                <ScalarProperty Name="sender" ColumnName="sender" />
+                <ScalarProperty Name="password" ColumnName="password" />
+                <ScalarProperty Name="userid" ColumnName="userid" />
+                <ScalarProperty Name="parameter_desc" ColumnName="parameter_desc" />
+                <ScalarProperty Name="parameter_code" ColumnName="parameter_code" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="api_url">
+            <EntityTypeMapping TypeName="DashBoardMPMModel.api_url">
+              <MappingFragment StoreEntitySet="api_url">
+                <ScalarProperty Name="file_template" ColumnName="file_template" />
+                <ScalarProperty Name="modify_date" ColumnName="modify_date" />
+                <ScalarProperty Name="modify_id" ColumnName="modify_id" />
+                <ScalarProperty Name="create_date" ColumnName="create_date" />
+                <ScalarProperty Name="create_id" ColumnName="create_id" />
+                <ScalarProperty Name="exec_order" ColumnName="exec_order" />
+                <ScalarProperty Name="group_code" ColumnName="group_code" />
+                <ScalarProperty Name="url_desc" ColumnName="url_desc" />
+                <ScalarProperty Name="url_name" ColumnName="url_name" />
+                <ScalarProperty Name="url_method" ColumnName="url_method" />
+                <ScalarProperty Name="url_value" ColumnName="url_value" />
+                <ScalarProperty Name="url_id" ColumnName="url_id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="it_task_register">
+            <EntityTypeMapping TypeName="DashBoardMPMModel.it_task_register">
+              <MappingFragment StoreEntitySet="it_task_register">
+                <ScalarProperty Name="file_template" ColumnName="file_template" />
+                <ScalarProperty Name="modify_date" ColumnName="modify_date" />
+                <ScalarProperty Name="modify_id" ColumnName="modify_id" />
+                <ScalarProperty Name="create_date" ColumnName="create_date" />
+                <ScalarProperty Name="create_id" ColumnName="create_id" />
+                <ScalarProperty Name="exec_order" ColumnName="exec_order" />
+                <ScalarProperty Name="group_code" ColumnName="group_code" />
+                <ScalarProperty Name="task_object" ColumnName="task_object" />
+                <ScalarProperty Name="task_type" ColumnName="task_type" />
+                <ScalarProperty Name="group_status" ColumnName="group_status" />
+                <ScalarProperty Name="task_desc" ColumnName="task_desc" />
+                <ScalarProperty Name="task_name" ColumnName="task_name" />
+                <ScalarProperty Name="task_code" ColumnName="task_code" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="it_task_schedule">
+            <EntityTypeMapping TypeName="DashBoardMPMModel.it_task_schedule">
+              <MappingFragment StoreEntitySet="it_task_schedule">
+                <ScalarProperty Name="bps_id" ColumnName="bps_id" />
+                <ScalarProperty Name="modify_date" ColumnName="modify_date" />
+                <ScalarProperty Name="modify_id" ColumnName="modify_id" />
+                <ScalarProperty Name="create_date" ColumnName="create_date" />
+                <ScalarProperty Name="create_id" ColumnName="create_id" />
+                <ScalarProperty Name="output_type" ColumnName="output_type" />
+                <ScalarProperty Name="stage" ColumnName="stage" />
+                <ScalarProperty Name="status" ColumnName="status" />
+                <ScalarProperty Name="ref_id" ColumnName="ref_id" />
+                <ScalarProperty Name="interval_unit" ColumnName="interval_unit" />
+                <ScalarProperty Name="interval" ColumnName="interval" />
+                <ScalarProperty Name="next_schedule" ColumnName="next_schedule" />
+                <ScalarProperty Name="start_schedule" ColumnName="start_schedule" />
+                <ScalarProperty Name="schedule_type" ColumnName="schedule_type" />
+                <ScalarProperty Name="desc" ColumnName="desc" />
+                <ScalarProperty Name="task_code" ColumnName="task_code" />
+                <ScalarProperty Name="register_id" ColumnName="register_id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="tbl_batch_status">
+            <EntityTypeMapping TypeName="DashBoardMPMModel.tbl_batch_status">
+              <MappingFragment StoreEntitySet="tbl_batch_status">
+                <ScalarProperty Name="modified_id" ColumnName="modified_id" />
+                <ScalarProperty Name="modified_date" ColumnName="modified_date" />
+                <ScalarProperty Name="create_id" ColumnName="create_id" />
+                <ScalarProperty Name="create_date" ColumnName="create_date" />
+                <ScalarProperty Name="status_desc" ColumnName="status_desc" />
+                <ScalarProperty Name="id" ColumnName="id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="tbl_participant_list">
+            <EntityTypeMapping TypeName="DashBoardMPMModel.tbl_participant_list">
+              <MappingFragment StoreEntitySet="tbl_participant_list">
+                <ScalarProperty Name="admin_fee" ColumnName="admin_fee" />
+                <ScalarProperty Name="coverNoteNumber" ColumnName="coverNoteNumber" />
+                <ScalarProperty Name="brokerageFeeAmount" ColumnName="brokerageFeeAmount" />
+                <ScalarProperty Name="premiumAmount" ColumnName="premiumAmount" />
+                <ScalarProperty Name="contract" ColumnName="contract" />
+                <ScalarProperty Name="ageAtTermEnd" ColumnName="ageAtTermEnd" />
+                <ScalarProperty Name="ageAtTermStart" ColumnName="ageAtTermStart" />
+                <ScalarProperty Name="termEnd" ColumnName="termEnd" />
+                <ScalarProperty Name="termStart" ColumnName="termStart" />
+                <ScalarProperty Name="termDurationInWeeks" ColumnName="termDurationInWeeks" />
+                <ScalarProperty Name="dueDate" ColumnName="dueDate" />
+                <ScalarProperty Name="disbursementDate" ColumnName="disbursementDate" />
+                <ScalarProperty Name="gracePeriodInWeeks" ColumnName="gracePeriodInWeeks" />
+                <ScalarProperty Name="cycle" ColumnName="cycle" />
+                <ScalarProperty Name="termInWeeks" ColumnName="termInWeeks" />
+                <ScalarProperty Name="Suku_Bunga" ColumnName="Suku_Bunga" />
+                <ScalarProperty Name="ceilingAmount" ColumnName="ceilingAmount" />
+                <ScalarProperty Name="lenderProductType" ColumnName="lenderProductType" />
+                <ScalarProperty Name="lenderProductCode" ColumnName="lenderProductCode" />
+                <ScalarProperty Name="loanId" ColumnName="loanId" />
+                <ScalarProperty Name="debtorId" ColumnName="debtorId" />
+                <ScalarProperty Name="fundManagementType" ColumnName="fundManagementType" />
+                <ScalarProperty Name="maritalStatus" ColumnName="maritalStatus" />
+                <ScalarProperty Name="address" ColumnName="address" />
+                <ScalarProperty Name="gender" ColumnName="gender" />
+                <ScalarProperty Name="dateOfBirth" ColumnName="dateOfBirth" />
+                <ScalarProperty Name="name" ColumnName="name" />
+                <ScalarProperty Name="idNumber" ColumnName="idNumber" />
+                <ScalarProperty Name="lenderBranchLabel" ColumnName="lenderBranchLabel" />
+                <ScalarProperty Name="lenderBranchCode" ColumnName="lenderBranchCode" />
+                <ScalarProperty Name="clientCompany" ColumnName="clientCompany" />
+                <ScalarProperty Name="clientRefId" ColumnName="clientRefId" />
+                <ScalarProperty Name="id" ColumnName="id" />
+                <ScalarProperty Name="notif_status" ColumnName="notif_status" />
+                <ScalarProperty Name="participant_status" ColumnName="participant_status" />
+                <ScalarProperty Name="batch_id" ColumnName="batch_id" />
+                <ScalarProperty Name="regno_batch" ColumnName="regno_batch" />
+                <ScalarProperty Name="regno" ColumnName="regno" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="tbl_participant_list_history">
+            <EntityTypeMapping TypeName="DashBoardMPMModel.tbl_participant_list_history">
+              <MappingFragment StoreEntitySet="tbl_participant_list_history">
+                <ScalarProperty Name="regno_batch" ColumnName="regno_batch" />
+                <ScalarProperty Name="coverNoteNumber" ColumnName="coverNoteNumber" />
+                <ScalarProperty Name="brokerageFeeAmount" ColumnName="brokerageFeeAmount" />
+                <ScalarProperty Name="premiumAmount" ColumnName="premiumAmount" />
+                <ScalarProperty Name="contract" ColumnName="contract" />
+                <ScalarProperty Name="ageAtTermEnd" ColumnName="ageAtTermEnd" />
+                <ScalarProperty Name="ageAtTermStart" ColumnName="ageAtTermStart" />
+                <ScalarProperty Name="termEnd" ColumnName="termEnd" />
+                <ScalarProperty Name="termStart" ColumnName="termStart" />
+                <ScalarProperty Name="termDurationInWeeks" ColumnName="termDurationInWeeks" />
+                <ScalarProperty Name="dueDate" ColumnName="dueDate" />
+                <ScalarProperty Name="disbursementDate" ColumnName="disbursementDate" />
+                <ScalarProperty Name="gracePeriodInWeeks" ColumnName="gracePeriodInWeeks" />
+                <ScalarProperty Name="cycle" ColumnName="cycle" />
+                <ScalarProperty Name="termInWeeks" ColumnName="termInWeeks" />
+                <ScalarProperty Name="Suku_Bunga" ColumnName="Suku_Bunga" />
+                <ScalarProperty Name="ceilingAmount" ColumnName="ceilingAmount" />
+                <ScalarProperty Name="lenderProductType" ColumnName="lenderProductType" />
+                <ScalarProperty Name="lenderProductCode" ColumnName="lenderProductCode" />
+                <ScalarProperty Name="loanId" ColumnName="loanId" />
+                <ScalarProperty Name="debtorId" ColumnName="debtorId" />
+                <ScalarProperty Name="fundManagementType" ColumnName="fundManagementType" />
+                <ScalarProperty Name="maritalStatus" ColumnName="maritalStatus" />
+                <ScalarProperty Name="address" ColumnName="address" />
+                <ScalarProperty Name="gender" ColumnName="gender" />
+                <ScalarProperty Name="dateOfBirth" ColumnName="dateOfBirth" />
+                <ScalarProperty Name="name" ColumnName="name" />
+                <ScalarProperty Name="idNumber" ColumnName="idNumber" />
+                <ScalarProperty Name="lenderBranchLabel" ColumnName="lenderBranchLabel" />
+                <ScalarProperty Name="lenderBranchCode" ColumnName="lenderBranchCode" />
+                <ScalarProperty Name="clientCompany" ColumnName="clientCompany" />
+                <ScalarProperty Name="clientRefId" ColumnName="clientRefId" />
+                <ScalarProperty Name="id" ColumnName="id" />
+                <ScalarProperty Name="notif_status" ColumnName="notif_status" />
+                <ScalarProperty Name="participant_status" ColumnName="participant_status" />
+                <ScalarProperty Name="batch_id" ColumnName="batch_id" />
+                <ScalarProperty Name="regno" ColumnName="regno" />
+                <ScalarProperty Name="rowid" ColumnName="rowid" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="tbl_participant_status">
+            <EntityTypeMapping TypeName="DashBoardMPMModel.tbl_participant_status">
+              <MappingFragment StoreEntitySet="tbl_participant_status">
+                <ScalarProperty Name="modified_id" ColumnName="modified_id" />
+                <ScalarProperty Name="modified_date" ColumnName="modified_date" />
+                <ScalarProperty Name="create_id" ColumnName="create_id" />
+                <ScalarProperty Name="create_date" ColumnName="create_date" />
+                <ScalarProperty Name="status_desc" ColumnName="status_desc" />
+                <ScalarProperty Name="id" ColumnName="id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="tbl_placing_batch">
+            <EntityTypeMapping TypeName="DashBoardMPMModel.tbl_placing_batch">
+              <MappingFragment StoreEntitySet="tbl_placing_batch">
+                <ScalarProperty Name="gen_id" ColumnName="gen_id" />
+                <ScalarProperty Name="totalCoveredInsurablesNotUnderPolicy" ColumnName="totalCoveredInsurablesNotUnderPolicy" />
+                <ScalarProperty Name="totalCoveredInsurablesUnderPolicy" ColumnName="totalCoveredInsurablesUnderPolicy" />
+                <ScalarProperty Name="totalUncoveredInsurables" ColumnName="totalUncoveredInsurables" />
+                <ScalarProperty Name="totalRejectedInsurables" ColumnName="totalRejectedInsurables" />
+                <ScalarProperty Name="totalCoveredInsurables" ColumnName="totalCoveredInsurables" />
+                <ScalarProperty Name="totalInsurables" ColumnName="totalInsurables" />
+                <ScalarProperty Name="status" ColumnName="status" />
+                <ScalarProperty Name="createdTime" ColumnName="createdTime" />
+                <ScalarProperty Name="id" ColumnName="id" />
+                <ScalarProperty Name="process_date" ColumnName="process_date" />
+                <ScalarProperty Name="insert_date" ColumnName="insert_date" />
+                <ScalarProperty Name="batch_status" ColumnName="batch_status" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="tbl_cover_notes">
+            <EntityTypeMapping TypeName="DashBoardMPMModel.tbl_cover_notes">
+              <MappingFragment StoreEntitySet="tbl_cover_notes">
+                <ScalarProperty Name="batch_id" ColumnName="batch_id" />
+                <ScalarProperty Name="finalizedTime" ColumnName="finalizedTime" />
+                <ScalarProperty Name="createdTime" ColumnName="createdTime" />
+                <ScalarProperty Name="administrationFee" ColumnName="administrationFee" />
+                <ScalarProperty Name="sumOfAmountAll" ColumnName="sumOfAmountAll" />
+                <ScalarProperty Name="status" ColumnName="status" />
+                <ScalarProperty Name="sumOfPremium" ColumnName="sumOfPremium" />
+                <ScalarProperty Name="countOfInsurables" ColumnName="countOfInsurables" />
+                <ScalarProperty Name="number" ColumnName="number" />
+                <ScalarProperty Name="id" ColumnName="id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+        </EntityContainerMapping>
+      </Mapping>
+    </edmx:Mappings>
+  </edmx:Runtime>
+  <!-- EF Designer content (DO NOT EDIT MANUALLY BELOW HERE) -->
+  <Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
+    <Connection>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="MetadataArtifactProcessing" Value="EmbedInOutputAssembly" />
+      </DesignerInfoPropertySet>
+    </Connection>
+    <Options>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="ValidateOnBuild" Value="true" />
+        <DesignerProperty Name="EnablePluralization" Value="true" />
+        <DesignerProperty Name="IncludeForeignKeysInModel" Value="true" />
+        <DesignerProperty Name="UseLegacyProvider" Value="false" />
+        <DesignerProperty Name="CodeGenerationStrategy" Value="None" />
+      </DesignerInfoPropertySet>
+    </Options>
+    <!-- Diagram content (shape and connector positions) -->
+    <Diagrams></Diagrams>
+  </Designer>
+</edmx:Edmx>

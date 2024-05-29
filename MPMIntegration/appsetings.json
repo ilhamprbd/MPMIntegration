@@ -1,0 +1,13 @@
+{
+  "Logging": {
+    "IncludeScopes": false,
+    "LogLevel": {
+      "Default": "Warning"
+    }
+  },
+  "ConnectionStrings": {
+    //"MbkDbConstr": "Data Source=bldsyr01\\MBK;Database=MbkTest;"
+    //"MbkDbConstr": "Data Source=bldsyr01;Initial Catalog=DashBoardMPM;uid=appsajk;pwd=4apps@user;Pooling=true;Connection Timeout=3600"
+    "MbkDbConstr": "Data Source=bl2wdbajp01;Initial Catalog=DashBoardMPM;uid=develop;pwd=20develop12;Pooling=true;Connection Timeout=3600"
+  }
+}  
