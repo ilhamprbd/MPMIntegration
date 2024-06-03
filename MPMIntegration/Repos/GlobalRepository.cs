@@ -15,7 +15,7 @@ namespace MPMIntegration.Repos
         public APIRepository repo_API = new APIRepository();
         public PlacingBatchRepository repo_placingBatch = new PlacingBatchRepository();
         public GenerateDocsRepository repo_generatedocs = new GenerateDocsRepository();
-
+        public CoverNoteRepository repo_covernote = new CoverNoteRepository();
 
     }
 }

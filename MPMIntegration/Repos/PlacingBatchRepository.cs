@@ -95,7 +95,6 @@ namespace MPMIntegration.Repos
             }
         }
 
-
         public async Task UpdateCoverNotesDetail(tbl_cover_notes data)
         {
             using (var db = new DashBoardMPMEntities1())
@@ -133,8 +132,6 @@ namespace MPMIntegration.Repos
                 }
             }
         }
-
-
 
         public async Task UpdateBatchListDetail(tbl_placing_batch data)
         {
@@ -203,7 +200,6 @@ namespace MPMIntegration.Repos
             }
         }
 
-
         public async Task<int> getSumAdminFee(string strBatchId)
         {
             try
@@ -225,7 +221,6 @@ namespace MPMIntegration.Repos
                 throw ex;
             }
         }
-
 
         public async Task SaveCoverNotes(tbl_cover_notes data)
         {

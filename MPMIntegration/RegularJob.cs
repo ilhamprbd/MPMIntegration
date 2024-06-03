@@ -1,4 +1,5 @@
 ﻿
+using MPMIntegration.APIModel;
 using MPMIntegration.Libraries;
 using MPMIntegration.Repos;
 using Quartz;
@@ -136,25 +137,36 @@ namespace MPMIntegration
                          foreach (var _lbatch in lissuedBatch)
                         {
                         
-                            int intAdminFee = await repos.repo_placingBatch.getSumAdminFee(_lbatch.id);
-                            tbl_cover_notes _lCoverNotes = await _hitApirepos.generateCovernote(lAPIConfig, lAPIUrl, strJwtToken, _lbatch.gen_id, intAdminFee, _lbatch.id);
-                            await repos.repo_placingBatch.SaveCoverNotes(_lCoverNotes);
+                            //int intAdminFee = await repos.repo_placingBatch.getSumAdminFee(_lbatch.id);
+                            //tbl_cover_notes _lCoverNotes = await _hitApirepos.generateCovernote(lAPIConfig, lAPIUrl, strJwtToken, _lbatch.gen_id, intAdminFee, _lbatch.id);
+                            //await repos.repo_placingBatch.SaveCoverNotes(_lCoverNotes);
 
-                            //ganti config dan URL untuk extract covernotes
+                            ////ganti config dan URL untuk extract covernotes
                            
                             string strPathCSV = _generateCSV.ParticipantCSV(_lbatch.id);
                             if (strPathCSV.Length > 1 )
                             {
                                 lAPIUrl = await repos.repo_API.GetURLAPI(6);
-                                bool blUploadparticipantCSV = await _hitApirepos.uploadParticipantCoverNote(lAPIConfig, lAPIUrl, strJwtToken, _lCoverNotes.id, strPathCSV);  
+                                //bool blUploadparticipantCSV = await _hitApirepos.uploadParticipantCoverNote(lAPIConfig, lAPIUrl, strJwtToken, _lCoverNotes.id, strPathCSV);  //upload participant csv to covernote
 
-                                if(blUploadparticipantCSV)
+                               // if(blUploadparticipantCSV)
                                 {
-                                    lAPIUrl = await repos.repo_API.GetURLAPI(7);
-                                    _lCoverNotes = await _hitApirepos.extractParticipantCoverNote(lAPIConfig, lAPIUrl, strJwtToken, _lCoverNotes.id);
-                                    await repos.repo_placingBatch.UpdateCoverNotesDetail(_lCoverNotes);
+                                    //lAPIUrl = await repos.repo_API.GetURLAPI(7);
+                                    //_lCoverNotes = await _hitApirepos.extractParticipantCoverNote(lAPIConfig, lAPIUrl, strJwtToken, _lCoverNotes.id); //extract covernote participant
+                                    //await repos.repo_placingBatch.UpdateCoverNotesDetail(_lCoverNotes);
+
+                                    // adding covernte invoice docs
+                                    List<invoiceListModel> _invoiceList = await  repos.repo_covernote.getInvoiceList(_lbatch.id);
 
 
+                                    List<it_report_list> _urlReport = await repos.repo_covernote.GetURLReport(1);
+                                    foreach ( var _invoice in _invoiceList)
+                                    {
+                                        
+                                        string strReportPath = ConfigurationManager.AppSettings["DocsFilePath"];
+                                        string strPathFile = await repos.repo_generatedocs.RenderReportAsync( 1, "PDF", strReportPath, _urlReport ,_invoice.InvoiceNo);
+
+                                    }
                                 }
                             } 
 

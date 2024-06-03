@@ -97,6 +97,17 @@
           <Property Name="modify_date" Type="datetime" />
           <Property Name="file_template" Type="varchar" MaxLength="100" />
         </EntityType>
+        <EntityType Name="it_report_list">
+          <Key>
+            <PropertyRef Name="code" />
+          </Key>
+          <Property Name="code" Type="int" Nullable="false" />
+          <Property Name="descr" Type="varchar" MaxLength="255" Nullable="false" />
+          <Property Name="url" Type="varchar" MaxLength="1000" Nullable="false" />
+          <Property Name="folder" Type="varchar" MaxLength="255" />
+          <Property Name="folder_name" Type="varchar" MaxLength="255" />
+          <Property Name="shhare" Type="int" />
+        </EntityType>
         <EntityType Name="it_task_register">
           <Key>
             <PropertyRef Name="task_code" />
@@ -320,6 +331,7 @@
           <EntitySet Name="api_log_request" EntityType="Self.api_log_request" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="api_parameter" EntityType="Self.api_parameter" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="api_url" EntityType="Self.api_url" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="it_report_list" EntityType="Self.it_report_list" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="it_task_register" EntityType="Self.it_task_register" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="it_task_schedule" EntityType="Self.it_task_schedule" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="tbl_batch_status" EntityType="Self.tbl_batch_status" Schema="dbo" store:Type="Tables" />
@@ -375,6 +387,7 @@
             <End Role="tbl_participant_list" EntitySet="tbl_participant_list" />
           </AssociationSet>
           <EntitySet Name="tbl_cover_notes" EntityType="DashBoardMPMModel.tbl_cover_notes" />
+          <EntitySet Name="it_report_list" EntityType="DashBoardMPMModel.it_report_list" />
         </EntityContainer>
         <EntityType Name="api_application">
           <Key>
@@ -705,6 +718,17 @@
           <Property Name="finalizedTime" Type="DateTime" Precision="3" />
           <Property Name="batch_id" Type="String" Nullable="false" MaxLength="80" FixedLength="false" Unicode="false" />
         </EntityType>
+        <EntityType Name="it_report_list">
+          <Key>
+            <PropertyRef Name="code" />
+          </Key>
+          <Property Name="code" Type="Int32" Nullable="false" />
+          <Property Name="descr" Type="String" Nullable="false" MaxLength="255" FixedLength="false" Unicode="false" />
+          <Property Name="url" Type="String" Nullable="false" MaxLength="1000" FixedLength="false" Unicode="false" />
+          <Property Name="folder" Type="String" MaxLength="255" FixedLength="false" Unicode="false" />
+          <Property Name="folder_name" Type="String" MaxLength="255" FixedLength="false" Unicode="false" />
+          <Property Name="shhare" Type="Int32" />
+        </EntityType>
         </Schema>
     </edmx:ConceptualModels>
     <!-- C-S mapping content -->
@@ -994,6 +1018,18 @@
                 <ScalarProperty Name="countOfInsurables" ColumnName="countOfInsurables" />
                 <ScalarProperty Name="number" ColumnName="number" />
                 <ScalarProperty Name="id" ColumnName="id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="it_report_list">
+            <EntityTypeMapping TypeName="DashBoardMPMModel.it_report_list">
+              <MappingFragment StoreEntitySet="it_report_list">
+                <ScalarProperty Name="shhare" ColumnName="shhare" />
+                <ScalarProperty Name="folder_name" ColumnName="folder_name" />
+                <ScalarProperty Name="folder" ColumnName="folder" />
+                <ScalarProperty Name="url" ColumnName="url" />
+                <ScalarProperty Name="descr" ColumnName="descr" />
+                <ScalarProperty Name="code" ColumnName="code" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>

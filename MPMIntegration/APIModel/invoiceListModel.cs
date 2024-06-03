@@ -4,12 +4,11 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace MPMIntegration.Repos
+namespace MPMIntegration.APIModel
 {
-    public class GenerateDocsRepository
+    public class invoiceListModel
     {
-
-
-
+        public string InvoiceNo { get; set; }
     }
+
 }
