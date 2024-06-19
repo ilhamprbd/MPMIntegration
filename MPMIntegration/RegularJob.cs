@@ -49,7 +49,7 @@ namespace MPMIntegration
                             Console.WriteLine("Executing Task #:" + it_sche.task_code + "|:" + it_reg.task_type + " :| : " + it_sche.desc);
                             if (it_reg.task_type == "API")
                             {
-                                List<api_client_configuration> lAPIConfig = await  repos.repo_API.GetClientConfigAPI();
+                                List<api_client_configuration> lAPIConfig = await repos.repo_API.GetClientConfigAPI();
                                 await repos.repo_tsc.BeingExecuted(it_sche.register_id);
                                 hitAPI(it_reg.task_code, lAPIConfig);
                                 await repos.repo_tsc.UpdateStage(it_sche.register_id, null);
@@ -80,7 +80,7 @@ namespace MPMIntegration
             {
 
                 List<it_task_register> TaskRegis = await repos.repo_regi.GetTaskRegis(strTaskCode);
-                List<api_url> lAPIUrl = await  repos.repo_API.GetURLAPI(Int32.Parse(TaskRegis.FirstOrDefault().task_object));
+                List<api_url> lAPIUrl = await repos.repo_API.GetURLAPI(Int32.Parse(TaskRegis.FirstOrDefault().task_object));
                 string strJwtToken = "";
 
 
@@ -105,10 +105,10 @@ namespace MPMIntegration
                     {
                         foreach (var _batchId in lissuedBatch)
                         {
-                                strJwtToken = await _hitApirepos.GetTokenAsyncClient(lAPIConfig);
+                            strJwtToken = await _hitApirepos.GetTokenAsyncClient(lAPIConfig);
 
-                                await _hitApirepos.GetParticipantDirectStream(lAPIConfig, lAPIUrl, strJwtToken, _batchId.id);
-                                await repos.repo_placingBatch.UpdateBatchListStatus(_batchId.id);
+                            await _hitApirepos.GetParticipantDirectStream(lAPIConfig, lAPIUrl, strJwtToken, _batchId.id);
+                            await repos.repo_placingBatch.UpdateBatchListStatus(_batchId.id);
                         }
                     }
                     else
@@ -134,41 +134,55 @@ namespace MPMIntegration
                     strJwtToken = await _hitApirepos.GetTokenAsyncClient(lAPIConfig);
                     if (lissuedBatch != null && strJwtToken.Length > 1)
 
-                         foreach (var _lbatch in lissuedBatch)
+                        foreach (var _lbatch in lissuedBatch)
                         {
-                        
+
                             //int intAdminFee = await repos.repo_placingBatch.getSumAdminFee(_lbatch.id);
                             //tbl_cover_notes _lCoverNotes = await _hitApirepos.generateCovernote(lAPIConfig, lAPIUrl, strJwtToken, _lbatch.gen_id, intAdminFee, _lbatch.id);
                             //await repos.repo_placingBatch.SaveCoverNotes(_lCoverNotes);
 
                             ////ganti config dan URL untuk extract covernotes
-                           
+
                             string strPathCSV = _generateCSV.ParticipantCSV(_lbatch.id);
-                            if (strPathCSV.Length > 1 )
+                            if (strPathCSV.Length > 1)
                             {
                                 lAPIUrl = await repos.repo_API.GetURLAPI(6);
                                 //bool blUploadparticipantCSV = await _hitApirepos.uploadParticipantCoverNote(lAPIConfig, lAPIUrl, strJwtToken, _lCoverNotes.id, strPathCSV);  //upload participant csv to covernote
 
-                               // if(blUploadparticipantCSV)
+                                // if(blUploadparticipantCSV)
                                 {
                                     //lAPIUrl = await repos.repo_API.GetURLAPI(7);
                                     //_lCoverNotes = await _hitApirepos.extractParticipantCoverNote(lAPIConfig, lAPIUrl, strJwtToken, _lCoverNotes.id); //extract covernote participant
                                     //await repos.repo_placingBatch.UpdateCoverNotesDetail(_lCoverNotes);
 
                                     // adding covernte invoice docs
-                                    List<invoiceListModel> _invoiceList = await  repos.repo_covernote.getInvoiceList(_lbatch.id);
-
 
                                     List<it_report_list> _urlReport = await repos.repo_covernote.GetURLReport(1);
-                                    foreach ( var _invoice in _invoiceList)
-                                    {
-                                        
-                                        string strReportPath = ConfigurationManager.AppSettings["DocsFilePath"];
-                                        string strPathFile = await repos.repo_generatedocs.RenderReportAsync( 1, "PDF", strReportPath, _urlReport ,_invoice.InvoiceNo);
 
+
+                                    string strReportPath = ConfigurationManager.AppSettings["DocsFilePath"];
+                                    string strPathFile = await repos.repo_generatedocs.RenderReportAsync(1, "PDF", strReportPath, _urlReport, _lbatch.id);
+                                    //  await repos.repo_covernote.UpdateInvoiceGenerateParti(_lbatch.id);
+
+                                    string strCovernoteId = await repos.repo_covernote.getCoverNoteId(_lbatch.id);
+
+                                    lAPIUrl = await repos.repo_API.GetURLAPI(8);
+                                    bool blUploadparticipantDoc = await _hitApirepos.uploadDocumentCoverNote(lAPIConfig, lAPIUrl, strJwtToken, strCovernoteId, strPathFile);  //upload covernote
+
+                                    if (blUploadparticipantDoc)
+                                    {
+                                        lAPIUrl = await repos.repo_API.GetURLAPI(9);
+                                        tbl_cover_notes _lCoverNotes = await _hitApirepos.finalizeCoverNote(lAPIConfig, lAPIUrl, strJwtToken, strCovernoteId) ;
+                                        //dsini update covernote finalize
+
+                                        lAPIUrl = await repos.repo_API.GetURLAPI(10);
+                                        tbl_placing_batch _tblplacingbatch = await _hitApirepos.finalizePlacingBatch(lAPIConfig, lAPIUrl, strJwtToken, _lbatch.id);
+                                        //disini update batch finalize
                                     }
+
+
                                 }
-                            } 
+                            }
 
                         }
                     Console.WriteLine("Updateing success !!"); ;

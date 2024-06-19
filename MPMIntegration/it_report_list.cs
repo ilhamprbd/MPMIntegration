@@ -18,7 +18,7 @@ namespace MPMIntegration
         public string descr { get; set; }
         public string url { get; set; }
         public string folder { get; set; }
-        public string folder_name { get; set; }
-        public Nullable<int> shhare { get; set; }
+        public string report_name { get; set; }
+        public Nullable<int> share { get; set; }
     }
 }

@@ -1,86 +1,78 @@
-﻿using System;
+﻿
+using MPMIntegration;
+using MPMIntegration.ReportExecutionService;
+using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
-using System.Net;
-using System.Net.Http;
-using System.Net.Http.Headers;
-using System.Text;
 using System.Threading.Tasks;
-using System.Xml.Linq;
-using Microsoft.Extensions.DependencyInjection;
-using MPMIntegration.ServiceReference;
+using System.Web.Services.Protocols;
+using System.Net.Http;
+using System.Text;
 
-namespace MPMIntegration.Libraries
+public class GenerateDocsRepository
 {
-    public class GenerateDocsRepository
+
+
+
+    public async Task<string> RenderReportAsync(int intReportCode, string strExportFormat, string strPath, List<it_report_list> lReportlist, string strBatchid)
     {
-        private readonly IHttpClientFactory _clientFactory;
-
-        public GenerateDocsRepository(IHttpClientFactory clientFactory)
+        try
         {
-            _clientFactory = clientFactory;
-        }
+            var report = lReportlist.FirstOrDefault(r => r.code == intReportCode);
 
-        public async Task<string> RenderReportAsync(int intReportCode, string strExportFormat, string strPath, List<it_report_list> lReportlist, string strInvoiceno)
-        {
-            string filename = "";
+            if (report == null)
+            {
+                Console.WriteLine("Report not found for code: " + intReportCode);
+                return null;
+            }
 
-            string reportPath = "/" + lReportlist.FirstOrDefault().folder + "/" + lReportlist.FirstOrDefault().folder_name;
-            string format = strExportFormat;
+            ReportExecutionService rs = new ReportExecutionService
+            {
+                Credentials = System.Net.CredentialCache.DefaultCredentials,
+                Url = report.url   //
+            };
+
+            string reportPath = $"/{report.folder}/{report.report_name}";
+            string format = "PDF";
             string devInfo = @"<DeviceInfo><Toolbar>False</Toolbar></DeviceInfo>";
 
-            var parameters = new ParameterValue[]
+            // Prepare report parameter.
+            ParameterValue[] parameters = new ParameterValue[1];
+            parameters[0] = new ParameterValue
             {
-                new ParameterValue
-                {
-                    Name = "INVOICENO",
-                    Value = strInvoiceno
-                }
+                Name = "BATCHID",
+                Value = strBatchid
             };
 
-            var client = _clientFactory.CreateClient("ReportExecutionService");
+            // Load report
+            rs.LoadReport(reportPath, null);
+            rs.SetExecutionParameters(parameters, "en-us");
 
-            // Prepare the SOAP request
-            var soapEnvelopeXml = new StringBuilder();
-            soapEnvelopeXml.Append($@"<soapenv:Envelope xmlns:soapenv=""http://schemas.xmlsoap.org/soap/envelope/"" xmlns:rep=""http://schemas.microsoft.com/sqlserver/2005/06/30/reporting/reportingservices"">
-                <soapenv:Header/>
-                <soapenv:Body>
-                    <rep:LoadReport>
-                        <rep:Report>{reportPath}</rep:Report>
-                        <rep:HistoryID>{null}</rep:HistoryID>
-                    </rep:LoadReport>
-                </soapenv:Body>
-            </soapenv:Envelope>");
+            // Render report
+            byte[] result = rs.Render(format, devInfo, out var extension, out var encoding, out var mimeType, out var warnings, out var streamIDs);
 
-            HttpRequestMessage request = new HttpRequestMessage(HttpMethod.Post, client.BaseAddress)
+            // Save report to file
+            string strFilename = $"{strBatchid}-{DateTime.Now:yyyyMMddhhmmss}";
+            string filePath = Path.Combine(strPath, strFilename + ".pdf");
+
+            using (var stream = File.Create(filePath))
             {
-                Content = new StringContent(soapEnvelopeXml.ToString(), Encoding.UTF8, "application/soap+xml")
-            };
-
-            HttpResponseMessage response = await client.SendAsync(request);
-
-            if (response.IsSuccessStatusCode)
-            {
-                string resultXml = await response.Content.ReadAsStringAsync();
-                XDocument doc = XDocument.Parse(resultXml);
-                var execInfo = doc.Descendants().Where(x => x.Name.LocalName == "ExecutionInfo").FirstOrDefault();
-
-                // Get the report's Execution ID
-                string executionId = execInfo.Element("ExecutionID")?.Value;
-
-                // Continue with rendering and handling the report...
-                // (You'll need to create and send another SOAP request for rendering)
-            }
-            else
-            {
-                throw new Exception("Failed to load report.");
+                await stream.WriteAsync(result, 0, result.Length);
+                Console.WriteLine("Report saved to: " + filePath);
             }
 
-            // The code to render and save the report remains to be written similarly
-            // Handle the rest of the logic as per your original method
-
-            return filename;
+            return filePath;
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine("Error rendering report: " + e.Message);
+            return null;
         }
     }
 }
+
+
+
+
 

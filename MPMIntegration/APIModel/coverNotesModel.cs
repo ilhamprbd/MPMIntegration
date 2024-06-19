@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace MPMIntegration.APIModel
 {
-    class coverNotesModel
+    public class coverNotesModel
     {
         public string number { get; set; } // Nomor Cover Note
         public string administrationFee { get; set; } // Biaya Administrasi (in Rupiah)

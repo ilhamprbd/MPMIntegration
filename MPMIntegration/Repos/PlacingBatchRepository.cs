@@ -207,9 +207,9 @@ namespace MPMIntegration.Repos
                 using (var db = new DashBoardMPMEntities1())
                 {
 
-                    decimal? sumAdminFee = db.tbl_participant_list
+                    decimal? sumAdminFee = await Task.Run(() =>  db.tbl_participant_list
                                         .Where(t => t.batch_id == strBatchId)
-                                        .Sum(t => t.admin_fee);
+                                        .Sum(t => t.admin_fee));
 
                     int sumAdminFeeInt = (int)(sumAdminFee ?? 0); // Default to 0 if sumAdminFee is null
 

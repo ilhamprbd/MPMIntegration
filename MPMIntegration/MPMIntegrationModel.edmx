@@ -105,8 +105,8 @@
           <Property Name="descr" Type="varchar" MaxLength="255" Nullable="false" />
           <Property Name="url" Type="varchar" MaxLength="1000" Nullable="false" />
           <Property Name="folder" Type="varchar" MaxLength="255" />
-          <Property Name="folder_name" Type="varchar" MaxLength="255" />
-          <Property Name="shhare" Type="int" />
+          <Property Name="report_name" Type="varchar" MaxLength="255" />
+          <Property Name="share" Type="int" />
         </EntityType>
         <EntityType Name="it_task_register">
           <Key>
@@ -726,8 +726,8 @@
           <Property Name="descr" Type="String" Nullable="false" MaxLength="255" FixedLength="false" Unicode="false" />
           <Property Name="url" Type="String" Nullable="false" MaxLength="1000" FixedLength="false" Unicode="false" />
           <Property Name="folder" Type="String" MaxLength="255" FixedLength="false" Unicode="false" />
-          <Property Name="folder_name" Type="String" MaxLength="255" FixedLength="false" Unicode="false" />
-          <Property Name="shhare" Type="Int32" />
+          <Property Name="report_name" Type="String" MaxLength="255" FixedLength="false" Unicode="false" />
+          <Property Name="share" Type="Int32" />
         </EntityType>
         </Schema>
     </edmx:ConceptualModels>
@@ -1024,8 +1024,8 @@
           <EntitySetMapping Name="it_report_list">
             <EntityTypeMapping TypeName="DashBoardMPMModel.it_report_list">
               <MappingFragment StoreEntitySet="it_report_list">
-                <ScalarProperty Name="shhare" ColumnName="shhare" />
-                <ScalarProperty Name="folder_name" ColumnName="folder_name" />
+                <ScalarProperty Name="share" ColumnName="share" />
+                <ScalarProperty Name="report_name" ColumnName="report_name" />
                 <ScalarProperty Name="folder" ColumnName="folder" />
                 <ScalarProperty Name="url" ColumnName="url" />
                 <ScalarProperty Name="descr" ColumnName="descr" />
