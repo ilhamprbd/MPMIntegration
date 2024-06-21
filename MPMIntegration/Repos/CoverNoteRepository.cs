@@ -96,8 +96,30 @@ namespace MPMIntegration.Repos
                     throw ex;
                 }
             }
+        }
+
+        public async Task<string> getPathFileCSV(string strBatchId)
+        {
+
+            using (var db = new DashBoardMPMEntities1())
+            {
+                try
+                {
+                    // Assuming you want to retrieve the coverNoteId column
+                    return await Task.Run(() =>
+                        db.tbl_cover_notes
+                          .Where(d => d.batch_id == strBatchId)
+                          .Select(d => d.path_file_csv)
+                          .FirstOrDefault());
+                }
+                catch (Exception ex)
+                {
+                    throw ex;
+                }
+            }
 
         }
+
 
     }
 }

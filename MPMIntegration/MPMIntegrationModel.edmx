@@ -173,6 +173,7 @@
           <Property Name="createdTime" Type="datetime" />
           <Property Name="finalizedTime" Type="datetime" />
           <Property Name="batch_id" Type="varchar" MaxLength="80" Nullable="false" />
+          <Property Name="path_file_csv" Type="varchar" MaxLength="90" />
         </EntityType>
         <EntityType Name="tbl_participant_list">
           <Key>
@@ -289,6 +290,23 @@
           <Property Name="totalCoveredInsurablesNotUnderPolicy" Type="int" />
           <Property Name="gen_id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
         </EntityType>
+        <EntityType Name="tbl_policies_holder">
+          <Key>
+            <PropertyRef Name="id" />
+          </Key>
+          <Property Name="id" Type="varchar" MaxLength="60" Nullable="false" />
+          <Property Name="number" Type="varchar" MaxLength="30" Nullable="false" />
+          <Property Name="status" Type="varchar" MaxLength="12" />
+          <Property Name="sumOfPremium" Type="varchar" MaxLength="60" />
+          <Property Name="sumOfAmountCovered" Type="varchar" MaxLength="60" />
+          <Property Name="sumOfAmountAll" Type="varchar" MaxLength="60" />
+          <Property Name="sumOfBrokerageFee" Type="varchar" MaxLength="60" />
+          <Property Name="countOfInsurables" Type="int" />
+          <Property Name="createdTime" Type="datetime" />
+          <Property Name="finalizedTime" Type="datetime" />
+          <Property Name="issuedDate" Type="datetime" />
+          <Property Name="batch_id" Type="varchar" MaxLength="80" />
+        </EntityType>
         <Association Name="FK__tbl_parti__batch__42E1EEFE">
           <End Role="tbl_placing_batch" Type="Self.tbl_placing_batch" Multiplicity="1" />
           <End Role="tbl_participant_list" Type="Self.tbl_participant_list" Multiplicity="*" />
@@ -340,6 +358,7 @@
           <EntitySet Name="tbl_participant_list_history" EntityType="Self.tbl_participant_list_history" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="tbl_participant_status" EntityType="Self.tbl_participant_status" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="tbl_placing_batch" EntityType="Self.tbl_placing_batch" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="tbl_policies_holder" EntityType="Self.tbl_policies_holder" Schema="dbo" store:Type="Tables" />
           <AssociationSet Name="FK__tbl_parti__batch__42E1EEFE" Association="Self.FK__tbl_parti__batch__42E1EEFE">
             <End Role="tbl_placing_batch" EntitySet="tbl_placing_batch" />
             <End Role="tbl_participant_list" EntitySet="tbl_participant_list" />
@@ -386,8 +405,9 @@
             <End Role="tbl_participant_status" EntitySet="tbl_participant_status" />
             <End Role="tbl_participant_list" EntitySet="tbl_participant_list" />
           </AssociationSet>
-          <EntitySet Name="tbl_cover_notes" EntityType="DashBoardMPMModel.tbl_cover_notes" />
           <EntitySet Name="it_report_list" EntityType="DashBoardMPMModel.it_report_list" />
+          <EntitySet Name="tbl_cover_notes" EntityType="DashBoardMPMModel.tbl_cover_notes" />
+          <EntitySet Name="tbl_policies_holder" EntityType="DashBoardMPMModel.tbl_policies_holder" />
         </EntityContainer>
         <EntityType Name="api_application">
           <Key>
@@ -703,6 +723,17 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
+        <EntityType Name="it_report_list">
+          <Key>
+            <PropertyRef Name="code" />
+          </Key>
+          <Property Name="code" Type="Int32" Nullable="false" />
+          <Property Name="descr" Type="String" Nullable="false" MaxLength="255" FixedLength="false" Unicode="false" />
+          <Property Name="url" Type="String" Nullable="false" MaxLength="1000" FixedLength="false" Unicode="false" />
+          <Property Name="folder" Type="String" MaxLength="255" FixedLength="false" Unicode="false" />
+          <Property Name="report_name" Type="String" MaxLength="255" FixedLength="false" Unicode="false" />
+          <Property Name="share" Type="Int32" />
+        </EntityType>
         <EntityType Name="tbl_cover_notes">
           <Key>
             <PropertyRef Name="id" />
@@ -717,17 +748,24 @@
           <Property Name="createdTime" Type="DateTime" Precision="3" />
           <Property Name="finalizedTime" Type="DateTime" Precision="3" />
           <Property Name="batch_id" Type="String" Nullable="false" MaxLength="80" FixedLength="false" Unicode="false" />
+          <Property Name="path_file_csv" Type="String" MaxLength="90" FixedLength="false" Unicode="false" />
         </EntityType>
-        <EntityType Name="it_report_list">
+        <EntityType Name="tbl_policies_holder">
           <Key>
-            <PropertyRef Name="code" />
+            <PropertyRef Name="id" />
           </Key>
-          <Property Name="code" Type="Int32" Nullable="false" />
-          <Property Name="descr" Type="String" Nullable="false" MaxLength="255" FixedLength="false" Unicode="false" />
-          <Property Name="url" Type="String" Nullable="false" MaxLength="1000" FixedLength="false" Unicode="false" />
-          <Property Name="folder" Type="String" MaxLength="255" FixedLength="false" Unicode="false" />
-          <Property Name="report_name" Type="String" MaxLength="255" FixedLength="false" Unicode="false" />
-          <Property Name="share" Type="Int32" />
+          <Property Name="id" Type="String" Nullable="false" MaxLength="60" FixedLength="false" Unicode="false" />
+          <Property Name="number" Type="String" Nullable="false" MaxLength="30" FixedLength="false" Unicode="false" />
+          <Property Name="status" Type="String" MaxLength="12" FixedLength="false" Unicode="false" />
+          <Property Name="sumOfPremium" Type="String" MaxLength="60" FixedLength="false" Unicode="false" />
+          <Property Name="sumOfAmountCovered" Type="String" MaxLength="60" FixedLength="false" Unicode="false" />
+          <Property Name="sumOfAmountAll" Type="String" MaxLength="60" FixedLength="false" Unicode="false" />
+          <Property Name="sumOfBrokerageFee" Type="String" MaxLength="60" FixedLength="false" Unicode="false" />
+          <Property Name="countOfInsurables" Type="Int32" />
+          <Property Name="createdTime" Type="DateTime" Precision="3" />
+          <Property Name="finalizedTime" Type="DateTime" Precision="3" />
+          <Property Name="issuedDate" Type="DateTime" Precision="3" />
+          <Property Name="batch_id" Type="String" MaxLength="80" FixedLength="false" Unicode="false" />
         </EntityType>
         </Schema>
     </edmx:ConceptualModels>
@@ -1005,9 +1043,22 @@
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
+          <EntitySetMapping Name="it_report_list">
+            <EntityTypeMapping TypeName="DashBoardMPMModel.it_report_list">
+              <MappingFragment StoreEntitySet="it_report_list">
+                <ScalarProperty Name="share" ColumnName="share" />
+                <ScalarProperty Name="report_name" ColumnName="report_name" />
+                <ScalarProperty Name="folder" ColumnName="folder" />
+                <ScalarProperty Name="url" ColumnName="url" />
+                <ScalarProperty Name="descr" ColumnName="descr" />
+                <ScalarProperty Name="code" ColumnName="code" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
           <EntitySetMapping Name="tbl_cover_notes">
             <EntityTypeMapping TypeName="DashBoardMPMModel.tbl_cover_notes">
               <MappingFragment StoreEntitySet="tbl_cover_notes">
+                <ScalarProperty Name="path_file_csv" ColumnName="path_file_csv" />
                 <ScalarProperty Name="batch_id" ColumnName="batch_id" />
                 <ScalarProperty Name="finalizedTime" ColumnName="finalizedTime" />
                 <ScalarProperty Name="createdTime" ColumnName="createdTime" />
@@ -1021,15 +1072,21 @@
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
-          <EntitySetMapping Name="it_report_list">
-            <EntityTypeMapping TypeName="DashBoardMPMModel.it_report_list">
-              <MappingFragment StoreEntitySet="it_report_list">
-                <ScalarProperty Name="share" ColumnName="share" />
-                <ScalarProperty Name="report_name" ColumnName="report_name" />
-                <ScalarProperty Name="folder" ColumnName="folder" />
-                <ScalarProperty Name="url" ColumnName="url" />
-                <ScalarProperty Name="descr" ColumnName="descr" />
-                <ScalarProperty Name="code" ColumnName="code" />
+          <EntitySetMapping Name="tbl_policies_holder">
+            <EntityTypeMapping TypeName="DashBoardMPMModel.tbl_policies_holder">
+              <MappingFragment StoreEntitySet="tbl_policies_holder">
+                <ScalarProperty Name="batch_id" ColumnName="batch_id" />
+                <ScalarProperty Name="issuedDate" ColumnName="issuedDate" />
+                <ScalarProperty Name="finalizedTime" ColumnName="finalizedTime" />
+                <ScalarProperty Name="createdTime" ColumnName="createdTime" />
+                <ScalarProperty Name="countOfInsurables" ColumnName="countOfInsurables" />
+                <ScalarProperty Name="sumOfBrokerageFee" ColumnName="sumOfBrokerageFee" />
+                <ScalarProperty Name="sumOfAmountAll" ColumnName="sumOfAmountAll" />
+                <ScalarProperty Name="sumOfAmountCovered" ColumnName="sumOfAmountCovered" />
+                <ScalarProperty Name="sumOfPremium" ColumnName="sumOfPremium" />
+                <ScalarProperty Name="status" ColumnName="status" />
+                <ScalarProperty Name="number" ColumnName="number" />
+                <ScalarProperty Name="id" ColumnName="id" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>

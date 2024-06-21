@@ -499,6 +499,79 @@ namespace MPMIntegration.Libraries
             return tblCoverNotes;
         }
 
+        public async Task<tbl_policies_holder> gerneratePolicyHolder(List<api_client_configuration> lApiConfig, List<api_url> lApiURL, string strJwtToken, string strBatchID , string strPolisNo, string strpolisissued)
+        {
+            timer.Start();
+            tbl_policies_holder tblPolciesHolder = new tbl_policies_holder();
+
+
+            policiesHolderModel policiesHolderModel = new policiesHolderModel
+            {
+                number = strPolisNo,
+                issuedDate = strpolisissued
+            };
+
+
+            string jsonbody = strJwtToken;
+            loginModel loginModel = JsonConvert.DeserializeObject<loginModel>(jsonbody);
+            string coverNotesJson = JsonConvert.SerializeObject(policiesHolderModel);
+            string responseString;
+
+            try
+            {
+                using (HttpClient client = HttpClientCustomslHandling())
+                {
+                    // Replace the URL with your API endpoint
+                    string apiUrl = lApiConfig.FirstOrDefault().url + lApiURL.FirstOrDefault().url_value.Replace("{id}", strBatchID);
+
+                    // Create the request
+                    var request = new HttpRequestMessage(HttpMethod.Post, apiUrl);
+                    request.Headers.Add("Authorization", $"Bearer {loginModel.token}");
+                    request.Content = new StringContent(coverNotesJson, System.Text.Encoding.UTF8, "application/json");
+
+                    // Send the request
+                    HttpResponseMessage response = await client.SendAsync(request);
+
+                    Console.WriteLine("Open Communication : " + apiUrl);
+
+                    if (response.IsSuccessStatusCode)
+                    {
+                        Console.WriteLine("status Code = " + response.StatusCode);
+                        responseString = await response.Content.ReadAsStringAsync();
+
+                        var responseObject = JsonConvert.DeserializeObject<dynamic>(responseString);
+                        // Map the response to tbl_cover_notes object
+                        tblPolciesHolder.id = responseObject.id;
+                        tblPolciesHolder.number = responseObject.number;
+                        tblPolciesHolder.status = responseObject.status;
+                        tblPolciesHolder.createdTime = responseObject.createdTime;
+                        tblPolciesHolder.issuedDate = responseObject.issuedDate;
+                        tblPolciesHolder.batch_id = strBatchID;
+
+
+                        await LogApiRequestAsync(lApiConfig, coverNotesJson, responseString, response.StatusCode, lApiURL);
+                    }
+                    else
+                    {
+                        Console.WriteLine($"Error: {response.StatusCode} - {response.ReasonPhrase}");
+                    }
+
+                }
+
+            }
+            catch (HttpRequestException ex)
+            {
+                Console.WriteLine($"Exception: {ex.Message}");
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("An error occurred: " + ex.Message);
+            }
+
+
+            return tblPolciesHolder;
+        }
+
         public async Task <bool> uploadParticipantCoverNote(List<api_client_configuration> lApiConfig, List<api_url> lApiURL, string strJwtToken, string strBatchID, string strPathCSV)
         {
             bool blUploadSuccess = false;
@@ -545,6 +618,142 @@ namespace MPMIntegration.Libraries
 
                         await LogApiRequestAsync(lApiConfig, strPathCSV, responseString, response.StatusCode, lApiURL);
                         
+                    }
+                    else
+                    {
+                        Console.WriteLine($"Error: {response.StatusCode} - {response.ReasonPhrase}");
+                    }
+
+                }
+
+            }
+            catch (HttpRequestException ex)
+            {
+                Console.WriteLine($"Exception: {ex.Message}");
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("An error occurred: " + ex.Message);
+            }
+
+            return blUploadSuccess;
+
+        }
+
+        public async Task<bool> uploadParticipantPolicies(List<api_client_configuration> lApiConfig, List<api_url> lApiURL, string strJwtToken, string strBatchID, string strPathCSV)
+        {
+            bool blUploadSuccess = false;
+            timer.Start();
+            tbl_cover_notes tblCoverNotes = new tbl_cover_notes();
+
+
+
+            string jsonbody = strJwtToken;
+            loginModel loginModel = JsonConvert.DeserializeObject<loginModel>(jsonbody);
+
+            string responseString;
+
+            try
+            {
+                using (HttpClient client = HttpClientCustomslHandling())
+                {
+                    // Replace the URL with your API endpoint
+                    string apiUrl = lApiConfig.FirstOrDefault().url + lApiURL.FirstOrDefault().url_value.Replace("{id}", strBatchID);
+
+                    // Create the request
+                    var request = new HttpRequestMessage(HttpMethod.Post, apiUrl);
+                    request.Headers.Add("Authorization", $"Bearer {loginModel.token}");
+
+                    var content = new MultipartFormDataContent();
+
+                    var fileStream = new FileStream(strPathCSV, FileMode.Open, FileAccess.Read);
+                    content.Add(new StreamContent(fileStream), "file", Path.GetFileName(strPathCSV));
+
+                    request.Content = content;
+                    // Send the request
+                    HttpResponseMessage response = await client.SendAsync(request);
+
+                    Console.WriteLine("Open Communication : " + apiUrl);
+
+                    if (response.IsSuccessStatusCode)
+                    {
+                        Console.WriteLine("status Code = " + response.StatusCode);
+                        responseString = await response.Content.ReadAsStringAsync();
+
+                        var responseObject = JsonConvert.DeserializeObject<dynamic>(responseString);
+
+                        blUploadSuccess = true;
+
+                        await LogApiRequestAsync(lApiConfig, strPathCSV, responseString, response.StatusCode, lApiURL);
+
+                    }
+                    else
+                    {
+                        Console.WriteLine($"Error: {response.StatusCode} - {response.ReasonPhrase}");
+                    }
+
+                }
+
+            }
+            catch (HttpRequestException ex)
+            {
+                Console.WriteLine($"Exception: {ex.Message}");
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("An error occurred: " + ex.Message);
+            }
+
+            return blUploadSuccess;
+
+        }
+
+        public async Task<bool> uploadPoliciesCertificate(List<api_client_configuration> lApiConfig, List<api_url> lApiURL, string strJwtToken, string strPoliciesId, string strPathCertif)
+        {
+            bool blUploadSuccess = false;
+            timer.Start();
+            tbl_cover_notes tblCoverNotes = new tbl_cover_notes();
+
+
+
+            string jsonbody = strJwtToken;
+            loginModel loginModel = JsonConvert.DeserializeObject<loginModel>(jsonbody);
+
+            string responseString;
+
+            try
+            {
+                using (HttpClient client = HttpClientCustomslHandling())
+                {
+                    // Replace the URL with your API endpoint
+                    string apiUrl = lApiConfig.FirstOrDefault().url + lApiURL.FirstOrDefault().url_value.Replace("{id}", strPoliciesId);
+
+                    // Create the request
+                    var request = new HttpRequestMessage(HttpMethod.Post, apiUrl);
+                    request.Headers.Add("Authorization", $"Bearer {loginModel.token}");
+
+                    var content = new MultipartFormDataContent();
+
+                    var fileStream = new FileStream(strPathCertif, FileMode.Open, FileAccess.Read);
+                    content.Add(new StreamContent(fileStream), "file", Path.GetFileName(strPathCertif));
+
+                    request.Content = content;
+                    // Send the request
+                    HttpResponseMessage response = await client.SendAsync(request);
+
+                    Console.WriteLine("Open Communication : " + apiUrl);
+
+                    if (response.IsSuccessStatusCode)
+                    {
+                        Console.WriteLine("status Code = " + response.StatusCode);
+                        responseString = await response.Content.ReadAsStringAsync();
+
+                        var responseObject = JsonConvert.DeserializeObject<dynamic>(responseString);
+
+                        blUploadSuccess = true;
+
+                        await LogApiRequestAsync(lApiConfig, strPathCertif, responseString, response.StatusCode, lApiURL);
+
                     }
                     else
                     {
@@ -636,7 +845,7 @@ namespace MPMIntegration.Libraries
 
         }
 
-        public async Task<tbl_cover_notes> extractParticipantCoverNote(List<api_client_configuration> lApiConfig, List<api_url> lApiURL, string strJwtToken, string strBatchID)
+        public async Task<tbl_cover_notes> extractParticipantCoverNote(List<api_client_configuration> lApiConfig, List<api_url> lApiURL, string strJwtToken, string strCoverNote ,string strBatchID)
         {
             timer.Start();
             tbl_cover_notes tblCoverNotes = new tbl_cover_notes();
@@ -652,7 +861,7 @@ namespace MPMIntegration.Libraries
                 using (HttpClient client = HttpClientCustomslHandling())
                 {
                     // Replace the URL with your API endpoint
-                    string apiUrl = lApiConfig.FirstOrDefault().url + lApiURL.FirstOrDefault().url_value.Replace("{id}", strBatchID);
+                    string apiUrl = lApiConfig.FirstOrDefault().url + lApiURL.FirstOrDefault().url_value.Replace("{id}", strCoverNote);
 
                     // Create the request
                     var request = new HttpRequestMessage(HttpMethod.Post, apiUrl);
@@ -704,7 +913,7 @@ namespace MPMIntegration.Libraries
             return tblCoverNotes;
         }
 
-        public async Task<tbl_cover_notes> finalizeCoverNote(List<api_client_configuration> lApiConfig, List<api_url> lApiURL, string strJwtToken, string strCoverNoteId)
+        public async Task<tbl_cover_notes> finalizeCoverNote(List<api_client_configuration> lApiConfig, List<api_url> lApiURL, string strJwtToken, string strCoverNoteId, string strBatchId)
         {
            
             timer.Start();
@@ -756,7 +965,7 @@ namespace MPMIntegration.Libraries
                         tblCoverNotes.administrationFee = responseObject.administrationFee.amount;
                         tblCoverNotes.createdTime = responseObject.createdTime;
                         tblCoverNotes.finalizedTime = responseObject.finalizedTime;
-                        tblCoverNotes.batch_id = strCoverNoteId;
+                        tblCoverNotes.batch_id = strBatchId;
 
                         await LogApiRequestAsync(lApiConfig, responseString, responseString, response.StatusCode, lApiURL);
                     }
@@ -776,8 +985,6 @@ namespace MPMIntegration.Libraries
             }
             return tblCoverNotes;
         }
-
-
 
         public async Task<tbl_placing_batch> finalizePlacingBatch(List<api_client_configuration> lApiConfig, List<api_url> lApiURL, string strJwtToken, string strBatchId)
         {
@@ -850,6 +1057,135 @@ namespace MPMIntegration.Libraries
                 Console.WriteLine("An error occurred: " + ex.Message);
             }
             return lPlacing_batch;
+        }
+
+        public async Task<tbl_policies_holder> finalizePoliciesHolder(List<api_client_configuration> lApiConfig, List<api_url> lApiURL, string strJwtToken, string strPoliciesId)
+        {
+
+            timer.Start();
+
+
+            tbl_policies_holder tblPoliciesHolder = new tbl_policies_holder();
+
+            string jsonbody = strJwtToken;
+            loginModel loginModel = JsonConvert.DeserializeObject<loginModel>(jsonbody);
+
+
+            string responseString;
+
+            try
+            {
+                using (HttpClient client = HttpClientCustomslHandling())
+                {
+                    // Replace the URL with your API endpoint
+                    string apiUrl = lApiConfig.FirstOrDefault().url + lApiURL.FirstOrDefault().url_value.Replace("{id}", strPoliciesId);
+
+                    // Create the request
+                    var request = new HttpRequestMessage(HttpMethod.Post, apiUrl);
+                    request.Headers.Add("Authorization", $"Bearer {loginModel.token}");
+                   // request.Content = new StringContent(placingBatchJson, System.Text.Encoding.UTF8, "application/json");
+
+                    // Send the request
+                    HttpResponseMessage response = await client.SendAsync(request);
+
+                    Console.WriteLine("Open Communication : " + apiUrl);
+
+                    if (response.IsSuccessStatusCode)
+                    {
+                        Console.WriteLine("status Code = " + response.StatusCode);
+                        responseString = await response.Content.ReadAsStringAsync();
+
+                        var responseObject = JsonConvert.DeserializeObject<dynamic>(responseString);
+                        // Map the response to tbl_cover_notes object
+                        tblPoliciesHolder.id = responseObject.id;
+                        tblPoliciesHolder.number = responseObject.number;
+                        tblPoliciesHolder.status = responseObject.status;
+                        tblPoliciesHolder.sumOfPremium = responseObject.sumOfPremium;
+                        tblPoliciesHolder.sumOfAmountCovered = responseObject.sumOfAmountCovered;
+                        tblPoliciesHolder.sumOfAmountAll = responseObject.sumOfAmountAll;
+                        tblPoliciesHolder.sumOfBrokerageFee = responseObject.sumOfBrokerageFee;
+                        tblPoliciesHolder.countOfInsurables = responseObject.countOfInsurables;
+                        tblPoliciesHolder.createdTime = responseObject.createdTime;
+                        tblPoliciesHolder.finalizedTime = responseObject.finalizedTime;
+                        tblPoliciesHolder.issuedDate = responseObject.issuedDate;
+
+                        await LogApiRequestAsync(lApiConfig, responseString, responseString, response.StatusCode, lApiURL);
+                    }
+                    else
+                    {
+                        Console.WriteLine($"Error: {response.StatusCode} - {response.ReasonPhrase}");
+                    }
+                }
+            }
+            catch (HttpRequestException ex)
+            {
+                Console.WriteLine($"Exception: {ex.Message}");
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("An error occurred: " + ex.Message);
+            }
+            return tblPoliciesHolder;
+        }
+
+
+        public async Task<bool> extractParticipantpolicies(List<api_client_configuration> lApiConfig, List<api_url> lApiURL, string strJwtToken, string strpolciesID, string strBatchID)
+        {
+            timer.Start();
+            tbl_cover_notes tblCoverNotes = new tbl_cover_notes();
+            bool blReturn = false;
+
+            string jsonbody = strJwtToken;
+            loginModel loginModel = JsonConvert.DeserializeObject<loginModel>(jsonbody);
+
+            string responseString;
+
+            try
+            {
+                using (HttpClient client = HttpClientCustomslHandling())
+                {
+                    // Replace the URL with your API endpoint
+                    string apiUrl = lApiConfig.FirstOrDefault().url + lApiURL.FirstOrDefault().url_value.Replace("{id}", strpolciesID);
+
+                    // Create the request
+                    var request = new HttpRequestMessage(HttpMethod.Post, apiUrl);
+                    request.Headers.Add("Authorization", $"Bearer {loginModel.token}");
+
+                    // Send the request
+                    HttpResponseMessage response = await client.SendAsync(request);
+
+                    Console.WriteLine("Open Communication : " + apiUrl);
+
+                    if (response.IsSuccessStatusCode)
+                    {
+                        Console.WriteLine("status Code = " + response.StatusCode);
+                        responseString = await response.Content.ReadAsStringAsync();
+
+                        var responseObject = JsonConvert.DeserializeObject<dynamic>(responseString);
+                        // Map the response to tbl_cover_notes object
+                        blReturn = true;
+
+                        await LogApiRequestAsync(lApiConfig, responseString, responseString, response.StatusCode, lApiURL);
+                    }
+                    else
+                    {
+                        Console.WriteLine($"Error: {response.StatusCode} - {response.ReasonPhrase}");
+                    }
+
+                }
+
+            }
+            catch (HttpRequestException ex)
+            {
+                Console.WriteLine($"Exception: {ex.Message}");
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("An error occurred: " + ex.Message);
+            }
+
+
+            return blReturn;
         }
 
         //Setup skeleton for populate data

@@ -14,7 +14,7 @@
     <Deterministic>true</Deterministic>
     <IsWebBootstrapper>false</IsWebBootstrapper>
     <TargetFrameworkProfile />
-    <PublishUrl>publish\</PublishUrl>
+    <PublishUrl>D:\Project\MPMPublish\</PublishUrl>
     <Install>true</Install>
     <InstallFrom>Disk</InstallFrom>
     <UpdateEnabled>false</UpdateEnabled>
@@ -24,9 +24,10 @@
     <UpdatePeriodically>false</UpdatePeriodically>
     <UpdateRequired>false</UpdateRequired>
     <MapFileExtensions>true</MapFileExtensions>
-    <ApplicationRevision>0</ApplicationRevision>
+    <ApplicationRevision>1</ApplicationRevision>
     <ApplicationVersion>1.0.0.%2a</ApplicationVersion>
     <UseApplicationTrust>false</UseApplicationTrust>
+    <PublishWizardCompleted>true</PublishWizardCompleted>
     <BootstrapperEnabled>true</BootstrapperEnabled>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
@@ -47,6 +48,18 @@
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup>
+    <ManifestCertificateThumbprint>CD553E45226942D7826C7ACAE0E16B5E21A3B332</ManifestCertificateThumbprint>
+  </PropertyGroup>
+  <PropertyGroup>
+    <ManifestKeyFile>MPMIntegration_TemporaryKey.pfx</ManifestKeyFile>
+  </PropertyGroup>
+  <PropertyGroup>
+    <GenerateManifests>true</GenerateManifests>
+  </PropertyGroup>
+  <PropertyGroup>
+    <SignManifests>true</SignManifests>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="CsvHelper, Version=30.0.0.0, Culture=neutral, PublicKeyToken=8c4959082be5c823, processorArchitecture=MSIL">
@@ -199,6 +212,7 @@
     <Compile Include="APIModel\loginModel.cs" />
     <Compile Include="APIModel\placingBatchesModel.cs" />
     <Compile Include="APIModel\placingBatchFinalizeModel.cs" />
+    <Compile Include="APIModel\policiesHolderModel.cs" />
     <Compile Include="api_application.cs">
       <DependentUpon>MPMIntegrationModel.tt</DependentUpon>
     </Compile>
@@ -257,6 +271,7 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="RegularJob.cs" />
     <Compile Include="Repos\PlacingBatchRepository.cs" />
+    <Compile Include="Repos\PoliciesHolderRepository.cs" />
     <Compile Include="tbl_batch_status.cs">
       <DependentUpon>MPMIntegrationModel.tt</DependentUpon>
     </Compile>
@@ -273,6 +288,9 @@
       <DependentUpon>MPMIntegrationModel.tt</DependentUpon>
     </Compile>
     <Compile Include="tbl_placing_batch.cs">
+      <DependentUpon>MPMIntegrationModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="tbl_policies_holder.cs">
       <DependentUpon>MPMIntegrationModel.tt</DependentUpon>
     </Compile>
     <Compile Include="Web References\ReportExecutionService\Reference.cs">
@@ -293,6 +311,7 @@
     <None Include="MPMIntegrationModel.edmx.diagram">
       <DependentUpon>MPMIntegrationModel.edmx</DependentUpon>
     </None>
+    <None Include="MPMIntegration_TemporaryKey.pfx" />
     <None Include="packages.config">
       <SubType>Designer</SubType>
     </None>

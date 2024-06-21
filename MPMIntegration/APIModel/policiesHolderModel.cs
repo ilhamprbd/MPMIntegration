@@ -6,9 +6,9 @@ using System.Threading.Tasks;
 
 namespace MPMIntegration.APIModel
 {
-    public class loginModel
+    public class policiesHolderModel
     {
-        public string token { get; set; }
-
+        public string number { get; set; } // Nomor Cover Note
+        public string issuedDate { get; set; } // Nomor Cover Note
     }
 }

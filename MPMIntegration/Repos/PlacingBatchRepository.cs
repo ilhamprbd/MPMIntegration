@@ -53,6 +53,24 @@ namespace MPMIntegration.Repos
             }
         }
 
+        public async Task<List<tbl_placing_batch>> GetBatchFinalize()
+        {
+            try
+            {
+                using (var db = new DashBoardMPMEntities1())
+                {
+                    List<tbl_placing_batch> batchList = await Task.Run(() => db.tbl_placing_batch.Where<tbl_placing_batch>(d => d.status.ToUpper() == "ISSUED" && d.batch_status == 2 && d.totalCoveredInsurables > 0).ToList());
+                    //List<tbl_placing_batch> batchList = await Task.Run(() => db.tbl_placing_batch.ToList());
+                    return batchList;
+                }
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+        }
+
+
         public async Task SaveBatchList(tbl_placing_batch data)
         {
             using (var db = new DashBoardMPMEntities1())
@@ -73,7 +91,7 @@ namespace MPMIntegration.Repos
             }
         }
 
-        public async Task UpdateBatchListStatus(string strBatchId)
+        public async Task UpdateBatchListStatus(string strBatchId, int intBatchStatus)
         {
             using (var db = new DashBoardMPMEntities1())
             {
@@ -83,13 +101,13 @@ namespace MPMIntegration.Repos
 
                     if (batchList != null)
                     {
-                        batchList.batch_status = 1;
+                        batchList.batch_status = intBatchStatus;
                         await db.SaveChangesAsync();
                     }
                 }
                 catch (Exception ex)
                 {
-                    Console.WriteLine("ERROR SAVING BATCH LIST : " + ex.Message);
+                    Console.WriteLine("ERROR UpdateBatchListStatus : " + ex.Message);
                     throw ex;
                 }
             }
@@ -127,7 +145,38 @@ namespace MPMIntegration.Repos
                 }
                 catch (Exception ex)
                 {
-                    Console.WriteLine("ERROR SAVING BATCH LIST : " + ex.Message);
+                    Console.WriteLine("ERROR UpdateCoverNotesDetail : " + ex.Message);
+                    throw ex;
+                }
+            }
+        }
+
+
+
+        public async Task UpdateCoverNotesPath(tbl_cover_notes data, string strPathFileCsv)
+        {
+            using (var db = new DashBoardMPMEntities1())
+            {
+                try
+                {
+                    tbl_cover_notes tblCoverNotes = await Task.Run(() => db.tbl_cover_notes.SingleOrDefault(d => d.id == data.id));
+
+                    if (tblCoverNotes != null)
+                    {
+                        // Update multiple values in the batchList object based on the dataModel
+
+                        tblCoverNotes.path_file_csv = strPathFileCsv; ;
+
+                        await db.SaveChangesAsync();
+                    }
+                    else
+                    {
+                        Console.WriteLine("Batch with ID " + data.id + " not found.");
+                    }
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine("ERROR UpdateCoverNotesDetail : " + ex.Message);
                     throw ex;
                 }
             }
@@ -173,7 +222,7 @@ namespace MPMIntegration.Repos
             {
                 using (var db = new DashBoardMPMEntities1())
                 {
-                    List<tbl_placing_batch> batchList = await Task.Run(() => db.tbl_placing_batch.Where<tbl_placing_batch>(d => d.status.ToUpper() == "ISSUED" && d.batch_status == 1 && d.totalInsurables > 0).ToList());
+                    List<tbl_placing_batch> batchList = await Task.Run(() => db.tbl_placing_batch.Where<tbl_placing_batch>(d => d.status.ToUpper() == "ISSUED" && d.batch_status == 1 && d.totalInsurables > 0 ).ToList());
                     return batchList;
                 }
             }
@@ -236,7 +285,7 @@ namespace MPMIntegration.Repos
                 }
                 catch (Exception ex)
                 {
-                    Console.WriteLine("ERROR SAVING BATCH LIST : " + ex.Message);
+                    Console.WriteLine("ERROR SaveCoverNotes : " + ex.Message);
                     throw ex;
                 }
             }

@@ -18,7 +18,7 @@ namespace MPMIntegration.Libraries
             string connectionString = ConfigurationManager.ConnectionStrings["AJPCore"].ConnectionString;
             string strPathFile = ConfigurationManager.AppSettings["CSVFilePath"];
             //string connectionString = "your_connection_string";
-            string query = "SELECT id FROM tbl_participant_list where participant_status = 1 and batch_id = '" + strBatchID + "'";
+            string query = "SELECT id FROM tbl_participant_list where participant_status = 1 and batch_id = '" + strBatchID + "'"  + " and notif_status = 0";
             string csvFilePath = Path.Combine( strPathFile,strBatchID + ".csv");
 
             try

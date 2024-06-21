@@ -12,18 +12,19 @@ namespace MPMIntegration
     using System;
     using System.Collections.Generic;
     
-    public partial class tbl_cover_notes
+    public partial class tbl_policies_holder
     {
         public string id { get; set; }
         public string number { get; set; }
-        public Nullable<int> countOfInsurables { get; set; }
-        public string sumOfPremium { get; set; }
         public string status { get; set; }
+        public string sumOfPremium { get; set; }
+        public string sumOfAmountCovered { get; set; }
         public string sumOfAmountAll { get; set; }
-        public string administrationFee { get; set; }
+        public string sumOfBrokerageFee { get; set; }
+        public Nullable<int> countOfInsurables { get; set; }
         public Nullable<System.DateTime> createdTime { get; set; }
         public Nullable<System.DateTime> finalizedTime { get; set; }
+        public Nullable<System.DateTime> issuedDate { get; set; }
         public string batch_id { get; set; }
-        public string path_file_csv { get; set; }
     }
 }

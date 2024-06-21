@@ -75,7 +75,7 @@ namespace MPMIntegration
 
         public async void hitAPI(string strTaskCode, List<api_client_configuration> lAPIConfig)
         {
-
+            string strReportPath = ConfigurationManager.AppSettings["DocsFilePath"];
             try
             {
 
@@ -108,7 +108,7 @@ namespace MPMIntegration
                             strJwtToken = await _hitApirepos.GetTokenAsyncClient(lAPIConfig);
 
                             await _hitApirepos.GetParticipantDirectStream(lAPIConfig, lAPIUrl, strJwtToken, _batchId.id);
-                            await repos.repo_placingBatch.UpdateBatchListStatus(_batchId.id);
+                            await repos.repo_placingBatch.UpdateBatchListStatus(_batchId.id, 1);
                         }
                     }
                     else
@@ -137,48 +137,60 @@ namespace MPMIntegration
                         foreach (var _lbatch in lissuedBatch)
                         {
 
-                            //int intAdminFee = await repos.repo_placingBatch.getSumAdminFee(_lbatch.id);
-                            //tbl_cover_notes _lCoverNotes = await _hitApirepos.generateCovernote(lAPIConfig, lAPIUrl, strJwtToken, _lbatch.gen_id, intAdminFee, _lbatch.id);
-                            //await repos.repo_placingBatch.SaveCoverNotes(_lCoverNotes);
+                            int intAdminFee = await repos.repo_placingBatch.getSumAdminFee(_lbatch.id); // getting sumAdminfee --> PNM need to set 0 or need calculate?
 
+                            tbl_cover_notes _lCoverNotes = await _hitApirepos.generateCovernote(lAPIConfig, lAPIUrl, strJwtToken, _lbatch.gen_id, intAdminFee, _lbatch.id); // getting covernote from API
+                            await repos.repo_placingBatch.SaveCoverNotes(_lCoverNotes);
                             ////ganti config dan URL untuk extract covernotes
 
                             string strPathCSV = _generateCSV.ParticipantCSV(_lbatch.id);
                             if (strPathCSV.Length > 1)
                             {
                                 lAPIUrl = await repos.repo_API.GetURLAPI(6);
-                                //bool blUploadparticipantCSV = await _hitApirepos.uploadParticipantCoverNote(lAPIConfig, lAPIUrl, strJwtToken, _lCoverNotes.id, strPathCSV);  //upload participant csv to covernote
+                                bool blUploadparticipantCSV = await _hitApirepos.uploadParticipantCoverNote(lAPIConfig, lAPIUrl, strJwtToken, _lCoverNotes.id, strPathCSV);  //upload participant csv to covernote
 
-                                // if(blUploadparticipantCSV)
+                                if (blUploadparticipantCSV)
                                 {
-                                    //lAPIUrl = await repos.repo_API.GetURLAPI(7);
-                                    //_lCoverNotes = await _hitApirepos.extractParticipantCoverNote(lAPIConfig, lAPIUrl, strJwtToken, _lCoverNotes.id); //extract covernote participant
-                                    //await repos.repo_placingBatch.UpdateCoverNotesDetail(_lCoverNotes);
+                                    lAPIUrl = await repos.repo_API.GetURLAPI(7);
+                                    _lCoverNotes = await _hitApirepos.extractParticipantCoverNote(lAPIConfig, lAPIUrl, strJwtToken, _lCoverNotes.id, _lbatch.id); //extract covernote participant
+                                    await repos.repo_placingBatch.UpdateCoverNotesPath(_lCoverNotes, strPathCSV);
 
                                     // adding covernte invoice docs
 
-                                    List<it_report_list> _urlReport = await repos.repo_covernote.GetURLReport(1);
+                                    List<it_report_list> _urlReport = await repos.repo_covernote.GetURLReport(2);
 
-
-                                    string strReportPath = ConfigurationManager.AppSettings["DocsFilePath"];
-                                    string strPathFile = await repos.repo_generatedocs.RenderReportAsync(1, "PDF", strReportPath, _urlReport, _lbatch.id);
-                                    //  await repos.repo_covernote.UpdateInvoiceGenerateParti(_lbatch.id);
 
                                     string strCovernoteId = await repos.repo_covernote.getCoverNoteId(_lbatch.id);
+                                    List<invoiceListModel> _invoiceList = await repos.repo_covernote.getInvoiceList(_lbatch.id);
+
 
                                     lAPIUrl = await repos.repo_API.GetURLAPI(8);
-                                    bool blUploadparticipantDoc = await _hitApirepos.uploadDocumentCoverNote(lAPIConfig, lAPIUrl, strJwtToken, strCovernoteId, strPathFile);  //upload covernote
-
-                                    if (blUploadparticipantDoc)
+                                    foreach (var _invoice in _invoiceList)
                                     {
-                                        lAPIUrl = await repos.repo_API.GetURLAPI(9);
-                                        tbl_cover_notes _lCoverNotes = await _hitApirepos.finalizeCoverNote(lAPIConfig, lAPIUrl, strJwtToken, strCovernoteId) ;
-                                        //dsini update covernote finalize
+                                        string strPathFileInvoice = await repos.repo_generatedocs.RenderReportInvoiceAsync(2, "PDF", strReportPath, _urlReport, _invoice.InvoiceNo);
+                                        await _hitApirepos.uploadDocumentCoverNote(lAPIConfig, lAPIUrl, strJwtToken, strCovernoteId, strPathFileInvoice);  //upload Invoice 
 
-                                        lAPIUrl = await repos.repo_API.GetURLAPI(10);
-                                        tbl_placing_batch _tblplacingbatch = await _hitApirepos.finalizePlacingBatch(lAPIConfig, lAPIUrl, strJwtToken, _lbatch.id);
-                                        //disini update batch finalize
+                                        await repos.repo_covernote.UpdateInvoiceGenerateParti(_invoice.InvoiceNo); // update finalize peserta notification
                                     }
+
+
+
+                                    lAPIUrl = await repos.repo_API.GetURLAPI(9);
+                                    _lCoverNotes = await _hitApirepos.finalizeCoverNote(lAPIConfig, lAPIUrl, strJwtToken, strCovernoteId, _lbatch.id); //finalize covernote
+
+                                    //dsini update covernote finalize
+                                    await repos.repo_placingBatch.UpdateCoverNotesDetail(_lCoverNotes);
+
+
+                                    lAPIUrl = await repos.repo_API.GetURLAPI(10);
+                                    tbl_placing_batch _tblplacingbatch = await _hitApirepos.finalizePlacingBatch(lAPIConfig, lAPIUrl, strJwtToken, _lbatch.id); // finalize placingbatch
+
+
+                                    //disini update batch finalize
+                                    await repos.repo_placingBatch.UpdateBatchListDetail(_tblplacingbatch);
+                                    await repos.repo_placingBatch.UpdateBatchListStatus(_lbatch.id, 2);
+
+
 
 
                                 }
@@ -190,6 +202,65 @@ namespace MPMIntegration
                 else if (strTaskCode == "T004")
                 {
 
+                    strJwtToken = await _hitApirepos.GetTokenAsyncClient(lAPIConfig);
+                    if (strJwtToken.Length > 1)
+                    {
+
+                        List<tbl_placing_batch> lissuedBatch = await repos.repo_placingBatch.GetBatchFinalize();
+                        tbl_policies_holder lpolHolder = new tbl_policies_holder();
+
+                        lAPIUrl = await repos.repo_API.GetURLAPI(13);
+
+
+                        foreach (var _lbatch in lissuedBatch)
+                        {
+                            string strPolisNo = ConfigurationManager.AppSettings["PolisNo"];
+                            string strpolisissued = "2021-01-08";
+                            //generate new policies hholder
+
+                            lpolHolder = await _hitApirepos.gerneratePolicyHolder(lAPIConfig, lAPIUrl, strJwtToken, _lbatch.id, strPolisNo, strpolisissued); // getting policyholder from API
+                            await repos.repo_policies.SavePoliciesHolder(lpolHolder);
+
+
+
+                            string strPathFileParticipant = await repos.repo_covernote.getPathFileCSV(_lbatch.id);
+                            if (strPathFileParticipant != null)
+                            {
+                                //string strCovernoteId = await repos.repo_covernote.getCoverNoteId(_lbatch.id);
+                                lAPIUrl = await repos.repo_API.GetURLAPI(14);
+                                bool blUploadparticipantDoc = await _hitApirepos.uploadParticipantPolicies(lAPIConfig, lAPIUrl, strJwtToken, lpolHolder.id, strPathFileParticipant);  //upload participant 
+
+                                if (blUploadparticipantDoc)
+                                {
+                                    lAPIUrl = await repos.repo_API.GetURLAPI(15);
+
+                                    string strPoliciesID = await repos.repo_policies.getPoliciesID(_lbatch.id);
+                                    bool blExtractPolicies = await _hitApirepos.extractParticipantpolicies(lAPIConfig, lAPIUrl, strJwtToken, lpolHolder.id, _lbatch.id); //extract covernote participant
+
+                                    if (blExtractPolicies)
+                                    {
+                                        //upload & render certificate
+                                        List<it_report_list> _urlReport = await repos.repo_covernote.GetURLReport(1);
+                                        string strPathFileSertifikat = await repos.repo_generatedocs.RenderReportSertifikatAsync(1, "PDF", strReportPath, _urlReport, _lbatch.id);
+
+                                        lAPIUrl = await repos.repo_API.GetURLAPI(16);
+                                        bool blUploadCertifcate = await _hitApirepos.uploadPoliciesCertificate(lAPIConfig, lAPIUrl, strJwtToken, lpolHolder.id, strPathFileSertifikat);  //upload certificate 
+                                        if (blUploadparticipantDoc)
+                                        {
+                                            lAPIUrl = await repos.repo_API.GetURLAPI(17);
+                                            lpolHolder = await _hitApirepos.finalizePoliciesHolder(lAPIConfig, lAPIUrl, strJwtToken, lpolHolder.id); // finalize
+
+                                            await repos.repo_policies.SavePoliciesHolder(lpolHolder);
+                                            await repos.repo_placingBatch.UpdateBatchListStatus(_lbatch.id, 3);
+                                        }
+
+                                    }
+
+                                }
+                            }
+
+                        }
+                    }
                 }
             }
             catch (Exception ex)
