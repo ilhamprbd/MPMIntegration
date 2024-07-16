@@ -258,7 +258,7 @@ namespace MPMIntegration.Libraries
             var jsonbody = strJwtToken;
             loginModel loginModel = JsonConvert.DeserializeObject<loginModel>(jsonbody);
 
-            string connectionString = ConfigurationManager.ConnectionStrings["AJPCore"].ConnectionString;
+            string connectionString = ConfigurationManager.ConnectionStrings["DashboardMPM"].ConnectionString;
             int chunkSize = Int32.Parse(ConfigurationManager.AppSettings["chunkSize"]);
             int bufferSize = Int32.Parse(ConfigurationManager.AppSettings["bufferSize"]);
 
@@ -273,7 +273,8 @@ namespace MPMIntegration.Libraries
                     client.DefaultRequestHeaders.Add("Accept", "text/csv");
                     client.DefaultRequestHeaders.Add("Authorization", $"Bearer {loginModel.token}");
 
-                    HttpResponseMessage response = await client.GetAsync(apiUrl);
+                    HttpResponseMessage response = await client.GetAsync(apiUrl, HttpCompletionOption.ResponseHeadersRead);
+
 
                     Console.WriteLine("Open Communication : " + apiUrl);
 
@@ -365,9 +366,13 @@ namespace MPMIntegration.Libraries
                     }
                 }
             }
+            catch (TaskCanceledException ex)
+            {
+                Console.WriteLine($"Request timed out: {ex.Message}");
+            }
             catch (HttpRequestException ex)
             {
-                Console.WriteLine($"Exception: {ex.Message}");
+                Console.WriteLine($"Request exception: {ex.Message}");
             }
             catch (Exception ex)
             {
@@ -423,7 +428,7 @@ namespace MPMIntegration.Libraries
             return lPlacing_batch;
         }
 
-        public async Task<tbl_cover_notes> generateCovernote(List<api_client_configuration> lApiConfig, List<api_url> lApiURL, string strJwtToken, int IntNumber, int intAdminFee, string strBatchID)
+        public async Task<tbl_cover_notes> generateCovernote(List<api_client_configuration> lApiConfig, List<api_url> lApiURL, string strJwtToken, List<invoiceListModel> invoiceLists )
         {
             timer.Start();
             tbl_cover_notes tblCoverNotes = new tbl_cover_notes();
@@ -431,8 +436,8 @@ namespace MPMIntegration.Libraries
 
             coverNotesModel coverNotesModel = new coverNotesModel
             {
-                number = "PNMINV" + DateTime.Now.ToString("ddMMyyyymmss-") + IntNumber.ToString(),
-                administrationFee = intAdminFee.ToString()
+                number = invoiceLists.FirstOrDefault().InvoiceNo  ,
+                administrationFee ="0"
             };
 
 
@@ -446,7 +451,7 @@ namespace MPMIntegration.Libraries
                 using (HttpClient client = HttpClientCustomslHandling())
                 {
                     // Replace the URL with your API endpoint
-                    string apiUrl = lApiConfig.FirstOrDefault().url + lApiURL.FirstOrDefault().url_value.Replace("{id}", strBatchID);
+                    string apiUrl = lApiConfig.FirstOrDefault().url + lApiURL.FirstOrDefault().url_value.Replace("{id}", invoiceLists.FirstOrDefault().BatchId);
 
                     // Create the request
                     var request = new HttpRequestMessage(HttpMethod.Post, apiUrl);
@@ -474,7 +479,8 @@ namespace MPMIntegration.Libraries
                         tblCoverNotes.administrationFee = responseObject.administrationFee.amount;
                         tblCoverNotes.createdTime = responseObject.createdTime;
                         tblCoverNotes.finalizedTime = responseObject.finalizedTime;
-                        tblCoverNotes.batch_id = strBatchID;
+                        tblCoverNotes.batch_id = invoiceLists.FirstOrDefault().BatchId;
+                        tblCoverNotes.finalize_status = 0;
 
                         await LogApiRequestAsync(lApiConfig, coverNotesJson, responseString, response.StatusCode, lApiURL);
                     }
@@ -499,7 +505,7 @@ namespace MPMIntegration.Libraries
             return tblCoverNotes;
         }
 
-        public async Task<tbl_policies_holder> gerneratePolicyHolder(List<api_client_configuration> lApiConfig, List<api_url> lApiURL, string strJwtToken, string strBatchID , string strPolisNo, string strpolisissued)
+        public async Task<tbl_policies_holder> generatePolicyHolder(List<api_client_configuration> lApiConfig, List<api_url> lApiURL, string strJwtToken, string strBatchID , string strPolisNo, string strpolisissued)
         {
             timer.Start();
             tbl_policies_holder tblPolciesHolder = new tbl_policies_holder();
@@ -572,7 +578,74 @@ namespace MPMIntegration.Libraries
             return tblPolciesHolder;
         }
 
-        public async Task <bool> uploadParticipantCoverNote(List<api_client_configuration> lApiConfig, List<api_url> lApiURL, string strJwtToken, string strBatchID, string strPathCSV)
+        public async Task<bool> uploadParticipantRejection(List<api_client_configuration> lApiConfig, List<api_url> lApiURL, string strJwtToken, string strBatchID, string strPathCSV)
+        {
+            bool blUploadSuccess = false;
+            timer.Start();
+
+
+
+            string jsonbody = strJwtToken;
+            loginModel loginModel = JsonConvert.DeserializeObject<loginModel>(jsonbody);
+
+            string responseString;
+
+            try
+            {
+                using (HttpClient client = HttpClientCustomslHandling())
+                {
+                    // Replace the URL with your API endpoint
+                    string apiUrl = lApiConfig.FirstOrDefault().url + lApiURL.FirstOrDefault().url_value.Replace("{id}", strBatchID);
+
+                    // Create the request
+                    var request = new HttpRequestMessage(HttpMethod.Post, apiUrl);
+                    request.Headers.Add("Authorization", $"Bearer {loginModel.token}");
+
+                    var content = new MultipartFormDataContent();
+
+                    var fileStream = new FileStream(strPathCSV, FileMode.Open, FileAccess.Read);
+                    content.Add(new StreamContent(fileStream), "file", Path.GetFileName(strPathCSV));
+
+                    request.Content = content;
+                    // Send the request
+                    HttpResponseMessage response = await client.SendAsync(request);
+
+                    Console.WriteLine("Open Communication : " + apiUrl);
+
+                    if (response.IsSuccessStatusCode)
+                    {
+                        Console.WriteLine("status Code = " + response.StatusCode);
+                        responseString = await response.Content.ReadAsStringAsync();
+
+                        var responseObject = JsonConvert.DeserializeObject<dynamic>(responseString);
+
+                        blUploadSuccess = true;
+
+                        await LogApiRequestAsync(lApiConfig, strPathCSV, responseString, response.StatusCode, lApiURL);
+                        Console.WriteLine("Success Uploading Participant Rejection !");
+
+                    }
+                    else
+                    {
+                        Console.WriteLine($"Error: {response.StatusCode} - {response.ReasonPhrase}");
+                    }
+
+                }
+
+            }
+            catch (HttpRequestException ex)
+            {
+                Console.WriteLine($"Exception: {ex.Message}");
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("An error occurred: " + ex.Message);
+            }
+
+            return blUploadSuccess;
+
+        }
+        public async Task <bool> uploadParticipantCoverNote(List<api_client_configuration> lApiConfig, List<api_url> lApiURL, string strJwtToken, string strCovernote, string strPathCSV)
         {
             bool blUploadSuccess = false;
             timer.Start();
@@ -590,7 +663,7 @@ namespace MPMIntegration.Libraries
                 using (HttpClient client = HttpClientCustomslHandling())
                 {
                     // Replace the URL with your API endpoint
-                    string apiUrl = lApiConfig.FirstOrDefault().url + lApiURL.FirstOrDefault().url_value.Replace("{id}", strBatchID);
+                    string apiUrl = lApiConfig.FirstOrDefault().url + lApiURL.FirstOrDefault().url_value.Replace("{id}", strCovernote);
 
                     // Create the request
                     var request = new HttpRequestMessage(HttpMethod.Post, apiUrl);
@@ -685,7 +758,7 @@ namespace MPMIntegration.Libraries
                         blUploadSuccess = true;
 
                         await LogApiRequestAsync(lApiConfig, strPathCSV, responseString, response.StatusCode, lApiURL);
-
+                        Console.WriteLine("Successfully uploaded: " + strPathCSV + " for policies certificate");
                     }
                     else
                     {
@@ -753,6 +826,7 @@ namespace MPMIntegration.Libraries
                         blUploadSuccess = true;
 
                         await LogApiRequestAsync(lApiConfig, strPathCertif, responseString, response.StatusCode, lApiURL);
+                        Console.WriteLine("Succed Upload Certificate :" + strPathCertif);
 
                     }
                     else
@@ -913,7 +987,66 @@ namespace MPMIntegration.Libraries
             return tblCoverNotes;
         }
 
-        public async Task<tbl_cover_notes> finalizeCoverNote(List<api_client_configuration> lApiConfig, List<api_url> lApiURL, string strJwtToken, string strCoverNoteId, string strBatchId)
+
+
+        public async Task<bool> extractParticipantRejected(List<api_client_configuration> lApiConfig, List<api_url> lApiURL, string strJwtToken, string strBatchID)
+        {
+            timer.Start();
+
+            bool blExtractStatus = false;
+
+            string jsonbody = strJwtToken;
+            loginModel loginModel = JsonConvert.DeserializeObject<loginModel>(jsonbody);
+
+            string responseString;
+
+            try
+            {
+                using (HttpClient client = HttpClientCustomslHandling())
+                {
+                    // Replace the URL with your API endpoint
+                    string apiUrl = lApiConfig.FirstOrDefault().url + lApiURL.FirstOrDefault().url_value.Replace("{id}", strBatchID);
+
+                    // Create the request
+                    var request = new HttpRequestMessage(HttpMethod.Post, apiUrl);
+                    request.Headers.Add("Authorization", $"Bearer {loginModel.token}");
+
+                    // Send the request
+                    HttpResponseMessage response = await client.SendAsync(request);
+
+                    Console.WriteLine("Open Communication : " + apiUrl);
+
+                    if (response.IsSuccessStatusCode)
+                    {
+                        Console.WriteLine("status Code = " + response.StatusCode);
+                        responseString = await response.Content.ReadAsStringAsync();
+
+                        var responseObject = JsonConvert.DeserializeObject<dynamic>(responseString);
+
+                        await LogApiRequestAsync(lApiConfig, strBatchID, responseString, response.StatusCode, lApiURL);
+                        blExtractStatus = true;
+                    }
+                    else
+                    {
+                        Console.WriteLine($"Error: {response.StatusCode} - {response.ReasonPhrase}");
+                    }
+
+                }
+
+            }
+            catch (HttpRequestException ex)
+            {
+                Console.WriteLine($"Exception: {ex.Message}");
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("An error occurred: " + ex.Message);
+            }
+            return blExtractStatus;
+        }
+
+
+        public async Task<tbl_cover_notes> finalizeCoverNote(List<api_client_configuration> lApiConfig, List<api_url> lApiURL, string strJwtToken, List<tbl_cover_notes> lTblCoverNotes )
         {
            
             timer.Start();
@@ -921,7 +1054,7 @@ namespace MPMIntegration.Libraries
 
             coverNoteFinalizeModel coverNotesFinalizeModel = new coverNoteFinalizeModel
             {
-                coverNoteId = strCoverNoteId
+                coverNoteId = lTblCoverNotes.FirstOrDefault().id
             };
 
 
@@ -937,7 +1070,7 @@ namespace MPMIntegration.Libraries
                 using (HttpClient client = HttpClientCustomslHandling())
                 {
                     // Replace the URL with your API endpoint
-                    string apiUrl = lApiConfig.FirstOrDefault().url + lApiURL.FirstOrDefault().url_value.Replace("{id}", strCoverNoteId);
+                    string apiUrl = lApiConfig.FirstOrDefault().url + lApiURL.FirstOrDefault().url_value.Replace("{id}", lTblCoverNotes.FirstOrDefault().id);
 
                     // Create the request
                     var request = new HttpRequestMessage(HttpMethod.Post, apiUrl);
@@ -965,7 +1098,8 @@ namespace MPMIntegration.Libraries
                         tblCoverNotes.administrationFee = responseObject.administrationFee.amount;
                         tblCoverNotes.createdTime = responseObject.createdTime;
                         tblCoverNotes.finalizedTime = responseObject.finalizedTime;
-                        tblCoverNotes.batch_id = strBatchId;
+                        tblCoverNotes.batch_id = lTblCoverNotes.FirstOrDefault().batch_id;
+                        tblCoverNotes.finalize_status = 1;
 
                         await LogApiRequestAsync(lApiConfig, responseString, responseString, response.StatusCode, lApiURL);
                     }
@@ -1041,6 +1175,8 @@ namespace MPMIntegration.Libraries
                         lPlacing_batch.totalCoveredInsurablesNotUnderPolicy = responseObject.totalCoveredInsurablesNotUnderPolicy;
 
                         await LogApiRequestAsync(lApiConfig, responseString, responseString, response.StatusCode, lApiURL);
+
+                        Console.WriteLine($"Succes Finalizing batch id : {responseObject.id} . Next Step Waiting MPM paid The Batches");
                     }
                     else
                     {
@@ -1097,19 +1233,21 @@ namespace MPMIntegration.Libraries
 
                         var responseObject = JsonConvert.DeserializeObject<dynamic>(responseString);
                         // Map the response to tbl_cover_notes object
-                        tblPoliciesHolder.id = responseObject.id;
+                        tblPoliciesHolder.id = strPoliciesId;
                         tblPoliciesHolder.number = responseObject.number;
                         tblPoliciesHolder.status = responseObject.status;
-                        tblPoliciesHolder.sumOfPremium = responseObject.sumOfPremium;
-                        tblPoliciesHolder.sumOfAmountCovered = responseObject.sumOfAmountCovered;
-                        tblPoliciesHolder.sumOfAmountAll = responseObject.sumOfAmountAll;
-                        tblPoliciesHolder.sumOfBrokerageFee = responseObject.sumOfBrokerageFee;
+                        tblPoliciesHolder.sumOfPremium = (string)responseObject.sumOfPremium.amount;
+                        tblPoliciesHolder.sumOfAmountCovered = (string)responseObject.sumOfAmountCovered.amount;
+                        tblPoliciesHolder.sumOfAmountAll = (string)responseObject.sumOfAmountAll.amount;
+                        tblPoliciesHolder.sumOfBrokerageFee = (string)responseObject.sumOfBrokerageFee.amount;
                         tblPoliciesHolder.countOfInsurables = responseObject.countOfInsurables;
                         tblPoliciesHolder.createdTime = responseObject.createdTime;
                         tblPoliciesHolder.finalizedTime = responseObject.finalizedTime;
                         tblPoliciesHolder.issuedDate = responseObject.issuedDate;
 
                         await LogApiRequestAsync(lApiConfig, responseString, responseString, response.StatusCode, lApiURL);
+
+                        Console.WriteLine("Finalizing Policies Holder Succed :" + responseObject.finalizedTime + " | " +strPoliciesId);
                     }
                     else
                     {
@@ -1166,6 +1304,8 @@ namespace MPMIntegration.Libraries
                         blReturn = true;
 
                         await LogApiRequestAsync(lApiConfig, responseString, responseString, response.StatusCode, lApiURL);
+
+                        Console.WriteLine("success extracting CSV | Waiting Core MPM Finalized Extracting file !" );
                     }
                     else
                     {
@@ -1254,6 +1394,7 @@ namespace MPMIntegration.Libraries
             }
         }
 
+
         static void InsertChunk(DataTable dataTable, string connectionString, string strTblParticipant)
         {
             try
@@ -1278,8 +1419,15 @@ namespace MPMIntegration.Libraries
                                 sqlBulkCopy.ColumnMappings.Add(column.ColumnName, column.ColumnName);
 
                             }
+                            try
+                            {
 
-                            sqlBulkCopy.WriteToServer(dataTable);
+                                sqlBulkCopy.WriteToServer(dataTable);
+                            }
+                            catch (Exception ex)
+                            {
+                                Console.WriteLine("Error inserting chunk: " + ex.Message);
+                            }
 
                         }
                     }

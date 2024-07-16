@@ -11,14 +11,14 @@ namespace MPMIntegration.Repos
     public class CoverNoteRepository
     {
 
-        public async Task <List<invoiceListModel>> getInvoiceList(string strBatchId)
+        public async Task<List<invoiceListModel>> getInvoiceList(string strBatchId)
         {
 
 
             using (var context = new DashBoardMPMEntities1()) // Replace YourDbContext with your actual DbContext class
             {
                 var invoiceList = await context.tbl_participant_list
-                    .Where(p => p.batch_id == strBatchId && p.notif_status == 0)
+                    .Where(p => p.batch_id == strBatchId && p.notif_status == 1)
                     .Select(p => p.coverNoteNumber)
                     .Distinct()
                     .ToListAsync();
@@ -26,6 +26,62 @@ namespace MPMIntegration.Repos
                 return invoiceList.Select(invoiceNo => new invoiceListModel { InvoiceNo = invoiceNo }).ToList();
             }
         }
+
+        public async Task<List<invoiceListModel>> getInvoiceListCoverNote(string strBatchId)
+        {
+
+            using (var context = new DashBoardMPMEntities1()) // Replace YourDbContext with your actual DbContext class
+            {
+                var invoiceDetailsList = await context.tbl_participant_list
+                    .Where(p => p.batch_id == strBatchId )
+                    .Select(p => new
+                    {
+                        InvoiceNo = p.coverNoteNumber,
+                        BatchId = p.batch_id,
+                        RegnoBatch = p.regno_batch
+                    })
+                    .Distinct()
+                    .ToListAsync();
+
+                return invoiceDetailsList.Select(details => new invoiceListModel
+                {
+                    InvoiceNo = details.InvoiceNo,
+                    BatchId = details.BatchId,
+                    RegnoBatch = details.RegnoBatch
+                }).ToList();
+            }
+
+        }
+
+
+        public async Task<List<invoiceListModel>> getPoliciesGen(string strBatchId)
+        {
+
+            using (var context = new DashBoardMPMEntities1())
+            {
+                var invoiceDetailsList = await context.tbl_participant_list
+                    .Where(p => p.batch_id == strBatchId &&
+                                !context.tbl_policies_holder.Any(b => b.number == p.regno_batch))
+                    .Select(p => new
+                    {
+                        InvoiceNo = p.coverNoteNumber,
+                        BatchId = p.batch_id,
+                        RegnoBatch = p.regno_batch
+                    })
+                    .Distinct()
+                    .ToListAsync();
+
+                return invoiceDetailsList.Select(details => new invoiceListModel
+                {
+                    InvoiceNo = details.InvoiceNo,
+                    BatchId = details.BatchId,
+                    RegnoBatch = details.RegnoBatch
+                }).ToList();
+            }
+
+
+        }
+
 
         public async Task UpdateInvoiceGenerateParti(string strInvoice)
         {
@@ -55,7 +111,25 @@ namespace MPMIntegration.Repos
         }
 
 
+        public async Task<List<tbl_cover_notes>> GetCoverNoteFinalize()
+        {
 
+            using (var db = new DashBoardMPMEntities1())
+            {
+                try
+                {
+                    // Using Task.Run to offload synchronous code to a background thread
+                    var ListCoverNote = await Task.Run(() => db.tbl_cover_notes.Where(d => d.finalize_status == 0).ToList());
+                   
+                    Console.WriteLine($"Found {ListCoverNote.Count().ToString()} CoverNote , Begin Finalize");
+                    return ListCoverNote;
+                }
+                catch (Exception ex)
+                {
+                    throw ex;
+                }
+            }
+        }
 
         public async Task<List<it_report_list>> GetURLReport(int intCode)
         {
@@ -77,7 +151,7 @@ namespace MPMIntegration.Repos
         }
 
 
-        public async Task<string>  getCoverNoteId(string strBatchId)
+        public async Task<string> getCoverNoteId(string strBatchId)
         {
 
             using (var db = new DashBoardMPMEntities1())
@@ -120,6 +194,26 @@ namespace MPMIntegration.Repos
 
         }
 
+
+        //public async Task SaveCoverNotesFinal(tbl_cover_notes data)
+        //{
+        //    using (var db = new DashBoardMPMEntities1())
+        //    {
+        //        try
+        //        {
+        //            await Task.Run(() =>
+        //            {
+        //                db.tbl_cover_notes.Add(data);
+        //                db.SaveChanges();
+        //            });
+        //        }
+        //        catch (Exception ex)
+        //        {
+        //            Console.WriteLine("ERROR SAVING BATCH LIST : " + ex.Message);
+        //            throw ex;
+        //        }
+        //    }
+        //}
 
     }
 }

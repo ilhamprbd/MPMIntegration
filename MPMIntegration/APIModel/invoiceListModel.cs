@@ -9,6 +9,8 @@ namespace MPMIntegration.APIModel
     public class invoiceListModel
     {
         public string InvoiceNo { get; set; }
+        public string BatchId { get; set; }
+        public string RegnoBatch { get; set; }
     }
 
 }

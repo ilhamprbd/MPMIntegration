@@ -22,8 +22,8 @@
         <AssociationConnector Association="DashBoardMPMModel.FK__tbl_parti__batch__42E1EEFE" />
         <AssociationConnector Association="DashBoardMPMModel.FK__tbl_parti__parti__43D61337" />
         <EntityTypeShape EntityType="DashBoardMPMModel.it_report_list" Width="1.5" PointX="7.375" PointY="12.75" />
-        <EntityTypeShape EntityType="DashBoardMPMModel.tbl_cover_notes" Width="1.5" PointX="12.375" PointY="0.75" />
         <EntityTypeShape EntityType="DashBoardMPMModel.tbl_policies_holder" Width="1.5" PointX="14.375" PointY="0.75" />
+        <EntityTypeShape EntityType="DashBoardMPMModel.tbl_cover_notes" Width="1.5" PointX="0.75" PointY="14.75" />
       </Diagram>
     </edmx:Diagrams>
   </edmx:Designer>

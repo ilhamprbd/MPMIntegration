@@ -25,5 +25,6 @@ namespace MPMIntegration
         public Nullable<System.DateTime> finalizedTime { get; set; }
         public string batch_id { get; set; }
         public string path_file_csv { get; set; }
+        public Nullable<int> finalize_status { get; set; }
     }
 }

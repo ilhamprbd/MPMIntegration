@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data.Entity;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -42,7 +43,7 @@ namespace MPMIntegration.Repos
             {
                 using (var db = new DashBoardMPMEntities1())
                 {
-                    List<tbl_placing_batch> batchList = await Task.Run(() => db.tbl_placing_batch.Where<tbl_placing_batch>(d => d.status.ToUpper() == "ISSUED" && d.batch_status == 0 && d.totalInsurables > 0).ToList());
+                    List<tbl_placing_batch> batchList = await Task.Run(() => db.tbl_placing_batch.Where<tbl_placing_batch>(d => d.totalInsurables > 0).ToList());
                     //List<tbl_placing_batch> batchList = await Task.Run(() => db.tbl_placing_batch.ToList());
                     return batchList;
                 }
@@ -53,13 +54,85 @@ namespace MPMIntegration.Repos
             }
         }
 
-        public async Task<List<tbl_placing_batch>> GetBatchFinalize()
+
+        public async Task<List<tbl_participant_list>> GetParticipantRejected()
         {
             try
             {
                 using (var db = new DashBoardMPMEntities1())
                 {
-                    List<tbl_placing_batch> batchList = await Task.Run(() => db.tbl_placing_batch.Where<tbl_placing_batch>(d => d.status.ToUpper() == "ISSUED" && d.batch_status == 2 && d.totalCoveredInsurables > 0).ToList());
+                    List<tbl_participant_list> batchList = await Task.Run(() => db.tbl_participant_list.Where<tbl_participant_list>(d => d.participant_status != 1 && d.participant_status != 0 && d.notif_status == 0 ).ToList());
+                    //List<tbl_placing_batch> batchList = await Task.Run(() => db.tbl_placing_batch.ToList());
+                    return batchList;
+                }
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+        }
+
+
+        public async Task<List<tbl_placing_batch>> GetBatchExecParticipant()
+        {
+            try
+            {
+                using (var db = new DashBoardMPMEntities1())
+                {
+                    List<tbl_placing_batch> batchList = await Task.Run(() => db.tbl_placing_batch.Where<tbl_placing_batch>(d => d.batch_status == 0).ToList());
+                    //List<tbl_placing_batch> batchList = await Task.Run(() => db.tbl_placing_batch.ToList());
+                    return batchList;
+                }
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+        }
+
+
+        public async Task<List<tbl_placing_batch>> GetPoliciesbatchGen()
+        {
+            try
+            {
+                using (var db = new DashBoardMPMEntities1())
+                {
+                    List<tbl_placing_batch> batchList = await Task.Run(() => db.tbl_placing_batch.Where<tbl_placing_batch>(d => d.status.ToUpper() == "paid" && d.batch_status == 3).ToList());
+                    //List<tbl_placing_batch> batchList = await Task.Run(() => db.tbl_placing_batch.ToList());
+                    return batchList;
+                }
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+        }
+
+
+        public async Task<List<tbl_placing_batch>> GetPoliciesFinalize()
+        {
+            try
+            {
+                using (var db = new DashBoardMPMEntities1())
+                {
+                    List<tbl_placing_batch> batchList = await Task.Run(() => db.tbl_placing_batch.Where<tbl_placing_batch>(d => d.status.ToUpper() == "PAID" && d.batch_status == 4).ToList());
+                    //List<tbl_placing_batch> batchList = await Task.Run(() => db.tbl_placing_batch.ToList());
+                    return batchList;
+                }
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+        }
+
+        public async Task<List<tbl_placing_batch>> GetBatchCoverNoteFinalize()
+        {
+            try
+            {
+                using (var db = new DashBoardMPMEntities1())
+                {
+                    List<tbl_placing_batch> batchList = await Task.Run(() => db.tbl_placing_batch.Where<tbl_placing_batch>(d => d.batch_status == 2 && d.status.ToUpper()  == "ISSUED").ToList());
                     //List<tbl_placing_batch> batchList = await Task.Run(() => db.tbl_placing_batch.ToList());
                     return batchList;
                 }
@@ -113,45 +186,48 @@ namespace MPMIntegration.Repos
             }
         }
 
-        public async Task UpdateCoverNotesDetail(tbl_cover_notes data)
+        public async Task UpdateCoverNotesDetail(List<tbl_cover_notes> data)
         {
             using (var db = new DashBoardMPMEntities1())
             {
                 try
                 {
-                    tbl_cover_notes tblCoverNotes = await Task.Run(() => db.tbl_cover_notes.SingleOrDefault(d => d.id == data.id));
-
-                    if (tblCoverNotes != null)
+                    foreach (var item in data)
                     {
-                        // Update multiple values in the batchList object based on the dataModel
+                        // Fetch the existing entity from the database
+                        var existingEntity = await db.tbl_cover_notes.SingleOrDefaultAsync(d => d.id == item.id);
 
-                        tblCoverNotes.id = data.id;
-                        tblCoverNotes.number = data.number;
-                        tblCoverNotes.countOfInsurables = data.countOfInsurables;
-                        tblCoverNotes.sumOfPremium = data.sumOfPremium;
-                        tblCoverNotes.status = data.status;
-                        tblCoverNotes.sumOfAmountAll = data.sumOfAmountAll;
-                        tblCoverNotes.administrationFee = data.administrationFee;
-                        tblCoverNotes.createdTime = data.createdTime;
-                        tblCoverNotes.finalizedTime = data.finalizedTime;
-                        tblCoverNotes.batch_id = data.batch_id;
+                        if (existingEntity != null)
+                        {
+                            // Update the entity with new values
+                            existingEntity.number = item.number;
+                            existingEntity.countOfInsurables = item.countOfInsurables;
+                            existingEntity.sumOfPremium = item.sumOfPremium;
+                            existingEntity.status = item.status;
+                            existingEntity.sumOfAmountAll = item.sumOfAmountAll;
+                            existingEntity.administrationFee = item.administrationFee;
+                            existingEntity.createdTime = item.createdTime;
+                            existingEntity.finalizedTime = item.finalizedTime;
+                            existingEntity.batch_id = item.batch_id;
 
-                        await db.SaveChangesAsync();
+                            Console.WriteLine("Finalized CoverNote number " + item.number + " Success.");
+                        }
+                        else
+                        {
+                            Console.WriteLine("Cover note with ID " + item.id + " not found.");
+                        }
                     }
-                    else
-                    {
-                        Console.WriteLine("Batch with ID " + data.id + " not found.");
-                    }
+
+                    // Save all changes to the database
+                    await db.SaveChangesAsync();
                 }
                 catch (Exception ex)
                 {
-                    Console.WriteLine("ERROR UpdateCoverNotesDetail : " + ex.Message);
-                    throw ex;
+                    Console.WriteLine("ERROR UpdateCoverNotesDetail: " + ex.Message);
+                    throw;
                 }
             }
         }
-
-
 
         public async Task UpdateCoverNotesPath(tbl_cover_notes data, string strPathFileCsv)
         {
@@ -200,6 +276,7 @@ namespace MPMIntegration.Repos
                         batchList.totalUncoveredInsurables = data.totalUncoveredInsurables;
                         batchList.totalCoveredInsurablesUnderPolicy = data.totalCoveredInsurablesUnderPolicy;
                         batchList.totalCoveredInsurablesNotUnderPolicy = data.totalCoveredInsurablesNotUnderPolicy;
+
                         // You can continue to update other fields as needed
                         await db.SaveChangesAsync();
                     }
@@ -216,7 +293,7 @@ namespace MPMIntegration.Repos
             }
         }
 
-        public async Task<List<tbl_placing_batch>> getGenerateCovernotesBatches()
+        public async Task<List<tbl_placing_batch>> getBatchesForGenerateCovernotes()
         {
             try
             {

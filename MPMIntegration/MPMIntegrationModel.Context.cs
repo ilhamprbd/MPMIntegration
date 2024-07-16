@@ -38,7 +38,7 @@ namespace MPMIntegration
         public virtual DbSet<tbl_participant_status> tbl_participant_status { get; set; }
         public virtual DbSet<tbl_placing_batch> tbl_placing_batch { get; set; }
         public virtual DbSet<it_report_list> it_report_list { get; set; }
-        public virtual DbSet<tbl_cover_notes> tbl_cover_notes { get; set; }
         public virtual DbSet<tbl_policies_holder> tbl_policies_holder { get; set; }
+        public virtual DbSet<tbl_cover_notes> tbl_cover_notes { get; set; }
     }
 }
