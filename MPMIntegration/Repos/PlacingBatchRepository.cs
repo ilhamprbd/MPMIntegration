@@ -80,7 +80,6 @@ namespace MPMIntegration.Repos
                 using (var db = new DashBoardMPMEntities1())
                 {
                     List<tbl_placing_batch> batchList = await Task.Run(() => db.tbl_placing_batch.Where<tbl_placing_batch>(d => d.batch_status == 0).ToList());
-                    //List<tbl_placing_batch> batchList = await Task.Run(() => db.tbl_placing_batch.ToList());
                     return batchList;
                 }
             }
@@ -97,8 +96,7 @@ namespace MPMIntegration.Repos
             {
                 using (var db = new DashBoardMPMEntities1())
                 {
-                    List<tbl_placing_batch> batchList = await Task.Run(() => db.tbl_placing_batch.Where<tbl_placing_batch>(d => d.status.ToUpper() == "paid" && d.batch_status == 3).ToList());
-                    //List<tbl_placing_batch> batchList = await Task.Run(() => db.tbl_placing_batch.ToList());
+                    List<tbl_placing_batch> batchList = await Task.Run(() => db.tbl_placing_batch.Where<tbl_placing_batch>(d => d.status.ToUpper() == "paid" && d.batch_status == 1).ToList());
                     return batchList;
                 }
             }
@@ -116,7 +114,6 @@ namespace MPMIntegration.Repos
                 using (var db = new DashBoardMPMEntities1())
                 {
                     List<tbl_placing_batch> batchList = await Task.Run(() => db.tbl_placing_batch.Where<tbl_placing_batch>(d => d.status.ToUpper() == "PAID" && d.batch_status == 4).ToList());
-                    //List<tbl_placing_batch> batchList = await Task.Run(() => db.tbl_placing_batch.ToList());
                     return batchList;
                 }
             }
@@ -133,7 +130,6 @@ namespace MPMIntegration.Repos
                 using (var db = new DashBoardMPMEntities1())
                 {
                     List<tbl_placing_batch> batchList = await Task.Run(() => db.tbl_placing_batch.Where<tbl_placing_batch>(d => d.batch_status == 2 && d.status.ToUpper()  == "ISSUED").ToList());
-                    //List<tbl_placing_batch> batchList = await Task.Run(() => db.tbl_placing_batch.ToList());
                     return batchList;
                 }
             }
@@ -340,6 +336,29 @@ namespace MPMIntegration.Repos
                     int sumAdminFeeInt = (int)(sumAdminFee ?? 0); // Default to 0 if sumAdminFee is null
 
                     return sumAdminFeeInt;
+                }
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+        }
+
+
+        public async Task<string> GetBatchRenderReport()
+        {
+            try
+            {
+                using (var db = new DashBoardMPMEntities1())
+                {
+
+                    string batchId = await db.tbl_placing_batch
+                          .Where(t => t.batch_status == 2 && t.status.ToUpper() == "PAID")
+                          .Select(t => t.id)
+                          .FirstOrDefaultAsync();
+
+
+                    return batchId;
                 }
             }
             catch (Exception ex)

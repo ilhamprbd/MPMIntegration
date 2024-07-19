@@ -52,14 +52,15 @@ namespace MPMIntegration
                             {
                                 List<api_client_configuration> lAPIConfig = await repos.repo_API.GetClientConfigAPI();
                                 await repos.repo_tsc.BeingExecuted(it_sche.register_id);
-                                hitAPI(it_reg.task_code, lAPIConfig);
+                                TaskHitAPI(it_reg.task_code, lAPIConfig);
                                 await repos.repo_tsc.UpdateStage(it_sche.register_id, null);
                             }
-                            else if (it_reg.task_type == "SP")
+                            else if (it_reg.task_type == "RP")
                             {
-                                await repos.repo_tsc.BeingExecuted(it_sche.register_id);
-                                await repos.repo_tsc.UpdateStage(it_sche.register_id, null);
 
+                                await repos.repo_tsc.BeingExecuted(it_sche.register_id);
+
+                                await repos.repo_tsc.UpdateStage(it_sche.register_id, null);
                             }
                         }
                     }
@@ -74,7 +75,7 @@ namespace MPMIntegration
 
         }
 
-        public async void hitAPI(string strTaskCode, List<api_client_configuration> lAPIConfig)
+        public async void TaskHitAPI(string strTaskCode, List<api_client_configuration> lAPIConfig)
         {
             string strReportPath = ConfigurationManager.AppSettings["DocsFilePath"];
             try
@@ -116,7 +117,7 @@ namespace MPMIntegration
                     }
                     else
                     {
-                        Console.WriteLine("NO Batch Id Found!.");
+                        Console.WriteLine("No Batch Id Found!.");
                     }
                 }
                 else if (strTaskCode == "T002")
@@ -188,7 +189,7 @@ namespace MPMIntegration
                     else { Console.WriteLine("Token NOt Found at : " + strTaskCode); }
                 }
 
-                else if (strTaskCode == "T004") // finalize covernote 
+                else if (strTaskCode == "T004") // finalize covernote -- udah ga di pake karena biar user aja yg jalanin.. nanti dipake lagi klo udah full automatic
                 {
                     strJwtToken = await _hitApirepos.GetTokenAsyncClient(lAPIConfig);
                     tbl_placing_batch tblBatch = new tbl_placing_batch();
@@ -279,7 +280,7 @@ namespace MPMIntegration
                             }
 
                         }
-                        else { Console.WriteLine("Token NOt Found at : " + strTaskCode); }
+                        else { Console.WriteLine("Token Not Found at : " + strTaskCode); }
 
                         lissuedBatch = await repos.repo_placingBatch.GetPoliciesbatchGen();
 
@@ -356,35 +357,21 @@ namespace MPMIntegration
                                         }
                                     }
                                 }
+                                lAPIUrl = await repos.repo_API.GetURLAPI(12);
+                                tblBatch = await _hitApirepos.getBatchListDetail(lAPIConfig, lAPIUrl, strJwtToken, lissuedBatch.FirstOrDefault().id);
+                                await repos.repo_placingBatch.UpdateBatchListDetail(tblBatch);
+                                await repos.repo_placingBatch.UpdateBatchListStatus(lissuedBatch.FirstOrDefault().id, 2);
                             }
 
-                            lAPIUrl = await repos.repo_API.GetURLAPI(12);
-                            tblBatch = await _hitApirepos.getBatchListDetail(lAPIConfig, lAPIUrl, strJwtToken, lissuedBatch.FirstOrDefault().id);
-                            await repos.repo_placingBatch.UpdateBatchListDetail(tblBatch);
-                            await repos.repo_placingBatch.UpdateBatchListStatus(lissuedBatch.FirstOrDefault().id, 4);
+
 
                         }
+                        Console.WriteLine("Not Placing Batch Paid Yet!");
                     }
 
 
                 }
 
-                else if (strTaskCode == "T99")
-                {
-
-                    List<invoiceListModel> lInvoice = await repos.repo_covernote.getInvoiceListCoverNote("01905dcc-2eb6-9aff-3554-accb8f9be155");
-                    if (lInvoice != null)
-                    {
-                        foreach (var _linvoice in lInvoice)
-                        {
-                            var invoiceList = new List<invoiceListModel> { _linvoice }; // Wrap _linvoice in a list
-
-                            string strPathFileParticipant = _generateCSV.ParticipantIssuedReport(invoiceList.FirstOrDefault().RegnoBatch); 
-                        }
-                        //dsini nanti ada email
-                    }
-
-                }
             }
             catch (Exception ex)
             {
@@ -392,5 +379,56 @@ namespace MPMIntegration
                 throw ex;
             }
         }
+
+
+        public async void TaskReport(string strTaskCode)
+        {
+            try
+            {
+                string strPathFileParticipant = null;
+                string strBatchId = null;
+                if (strTaskCode == "T006")
+                {
+
+                    bool isWeekend = DateTime.Now.DayOfWeek == DayOfWeek.Saturday || DateTime.Now.DayOfWeek == DayOfWeek.Sunday || DateTime.Now.DayOfWeek == DayOfWeek.Friday;
+
+                    if (!isWeekend)
+                    {
+                        strBatchId = await repos.repo_placingBatch.GetBatchRenderReport();
+
+                        if (strBatchId != null)
+                        {
+                            List<invoiceListModel> lInvoice = await repos.repo_covernote.getInvoiceListCoverNote(strBatchId);
+                            if (lInvoice != null)
+                            {
+                                foreach (var _linvoice in lInvoice)
+                                {
+                                    var invoiceList = new List<invoiceListModel> { _linvoice }; // Wrap _linvoice in a list
+
+                                    strPathFileParticipant = _generateCSV.ParticipantIssuedReport(invoiceList.FirstOrDefault().RegnoBatch);
+                                }
+
+                                if (strPathFileParticipant != null)
+                                {
+
+                                    _sentEmail.ParticipantRecon();
+                                }
+                            }
+                        }
+                    }
+
+
+
+                }
+
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+
+
+        }
+
     }
 }
